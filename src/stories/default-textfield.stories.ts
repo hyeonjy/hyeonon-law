@@ -72,6 +72,7 @@ export const WithError: Story = {
     showIcon: true,
     isError: true,
     errorMessage: "이메일 형식이 올바르지 않습니다.",
+    type: "email",
     value: "invalid-email",
   },
 };
