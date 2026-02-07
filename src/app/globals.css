@@ -17,3 +17,9 @@
     --color-grayscale-500: #1a1a1a;
   }
 }
+
+@layer components {
+  .text-field > p {
+    position: absolute;
+  }
+}
