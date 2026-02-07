@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { DefaultTextField } from "../components/ui/default-textfield";
+import { fn } from "storybook/test";
 
 const meta = {
   title: "TextFields/DefaultTextField",
@@ -38,6 +39,9 @@ const meta = {
       options: ["text", "password", "email", "tel", "number"],
       description: "입력 타입",
     },
+  },
+  args: {
+    onChange: fn(),
   },
 } satisfies Meta<typeof DefaultTextField>;
 

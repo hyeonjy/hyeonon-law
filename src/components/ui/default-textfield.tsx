@@ -14,7 +14,7 @@ export interface DefaultTextFieldProps {
   /** 입력 값 */
   value?: string;
   /** 변경 핸들러 */
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   /** 입력 타입 (text, password, email 등) */
   type?: string;
 }
@@ -36,7 +36,7 @@ export const DefaultTextField = ({
         htmlFor={htmlFor}
         className="mb-2 flex items-center gap-2 select-none"
       >
-        <span className="text-sm font-medium leading-[14px] text-[#1a1a1a]">
+        <span className="text-sm font-medium leading-[14px] text-grayscale-500">
           {label}
         </span>
         {showIcon && (
@@ -51,7 +51,7 @@ export const DefaultTextField = ({
         type={type}
         value={value}
         onChange={onChange}
-        className="h-9 w-full rounded-lg bg-white/[0.002] px-3 text-sm text-[#1a1a1a] shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] outline-none focus:shadow-[0_1px_3px_0_rgba(0,0,0,0.1)]"
+        className="h-9 w-full rounded-lg bg-white/[0.002] px-3 text-sm text-grayscale-500 border border-grayscale-200 outline-none shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] focus:shadow-[0_1px_3px_0_rgba(0,0,0,0.1)]"
       />
 
       {/* Error Message */}
