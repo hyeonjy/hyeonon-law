@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Primary Color */
+    --color-primary: #0f2942;
+
+    /* Secondary Colors */
+    --color-secondary-100: #c9a961;
+    --color-secondary-200: #894b00;
+
+    /* Grayscale */
+    --color-grayscale-100: #f8f7f4;
+    --color-grayscale-200: #e8e7e3;
+    --color-grayscale-300: #d9d7d2;
+    --color-grayscale-400: #6b6b6b;
+    --color-grayscale-500: #1a1a1a;
+  }
+}
