@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Button } from "../components/ui/button";
-import { fn } from "storybook/test";
 
 const meta = {
   title: "Buttons/Button",
@@ -30,9 +29,6 @@ const meta = {
       control: "boolean",
       description: "비활성화 상태 여부",
     },
-  },
-  args: {
-    onClick: fn(),
   },
 } satisfies Meta<typeof Button>;
 

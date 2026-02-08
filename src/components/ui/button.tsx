@@ -8,7 +8,7 @@ interface IButtonProps {
   /** 비활성화 상태 */
   disabled?: boolean;
   /** 클릭 핸들러 */
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const Button = ({
