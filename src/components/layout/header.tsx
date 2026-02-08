@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sheet";
 import { Menu, Scale, X } from "lucide-react";
 import { User, users } from "@/mocks/users";
-import { Button } from "../ui/button";
+import { BaseButton } from "../ui/base-button";
 
 // 1. 네비게이션 데이터 정의
 const NAV_ITEMS = [
@@ -178,7 +178,7 @@ const MobileMenu = ({ user }: { user: User | null }) => (
               </div>
             ) : (
               <Link href={ROUTES.LOGIN} className="block w-full">
-                <Button label="로그인" />
+                <BaseButton label="로그인" />
               </Link>
             )}
           </div>
