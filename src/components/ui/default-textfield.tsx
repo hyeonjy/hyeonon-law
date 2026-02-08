@@ -1,6 +1,6 @@
 import { ErrorMessage } from "./error-message";
 
-export interface DefaultTextFieldProps {
+export interface IDefaultTextFieldProps {
   /** 라벨과 input의 id를 연결할 값 */
   htmlFor: string;
   /** 입력 필드 위에 표시되는 라벨 텍스트 */
@@ -28,7 +28,7 @@ export const DefaultTextField = ({
   value = "",
   onChange,
   type = "text",
-}: DefaultTextFieldProps) => {
+}: IDefaultTextFieldProps) => {
   return (
     <div className="w-full relative text-field">
       {/* Label */}
