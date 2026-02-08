@@ -1,4 +1,5 @@
 import { ErrorMessage } from "./error-message";
+import Label from "./label";
 
 export interface IDefaultTextFieldProps {
   /** 라벨과 input의 id를 연결할 값 */
@@ -32,19 +33,9 @@ export const DefaultTextField = ({
   return (
     <div className="w-full relative text-field">
       {/* Label */}
-      <label
-        htmlFor={htmlFor}
-        className="mb-2 flex items-center gap-2 select-none"
-      >
-        <span className="text-sm font-medium leading-[14px] text-grayscale-500">
-          {label}
-        </span>
-        {showIcon && (
-          <span className="text-sm font-medium leading-[14px] text-red-500">
-            *
-          </span>
-        )}
-      </label>
+      <Label htmlFor={htmlFor} showIcon={showIcon}>
+        {label}
+      </Label>
 
       <input
         id={htmlFor}

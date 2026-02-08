@@ -5,5 +5,7 @@ export interface IErrorMessageProps {
 
 /** 폼 필드를 위한 에러 메시지 컴포넌트 */
 export const ErrorMessage = ({ children }: IErrorMessageProps) => {
-  return <p className="mt-1 text-xs font-normal text-red-500">{children}</p>;
+  return (
+    <p className="h-6 mt-1 text-xs font-normal text-red-500">{children}</p>
+  );
 };
