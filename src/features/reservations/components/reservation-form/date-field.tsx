@@ -45,7 +45,7 @@ export function DateField({ label, value, onChange, error }: IDateFieldProps) {
       </Label>
 
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+        <PopoverTrigger id={label} asChild>
           <button
             type="button"
             className="h-9 w-full rounded-lg border border-grayscale-200 bg-white/[0.002] px-3 text-left text-sm text-grayscale-500 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] outline-none focus:shadow-[0_1px_3px_0_rgba(0,0,0,0.1)]"

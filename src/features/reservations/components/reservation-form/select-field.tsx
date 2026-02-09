@@ -38,7 +38,10 @@ export function SelectField({
       </Label>
 
       <Select value={value} onValueChange={onChange} disabled={disabled}>
-        <SelectTrigger className="h-9 w-full rounded-lg border-grayscale-200 bg-white/[0.002] text-sm shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] focus:shadow-[0_1px_3px_0_rgba(0,0,0,0.1)]">
+        <SelectTrigger
+          id={label}
+          className="h-9 w-full rounded-lg border-grayscale-200 bg-white/[0.002] text-sm shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] focus:shadow-[0_1px_3px_0_rgba(0,0,0,0.1)]"
+        >
           <SelectValue
             placeholder={
               disabled ? "날짜를 먼저 선택해주세요" : `${label}을 선택해주세요`
