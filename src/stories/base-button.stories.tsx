@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { Button } from "../components/ui/button";
+import { BaseButton } from "../components/ui/base-button";
 
 const meta = {
-  title: "Buttons/Button",
-  component: Button,
+  title: "Buttons/BaseButton",
+  component: BaseButton,
   parameters: {
     layout: "centered",
   },
@@ -29,8 +29,13 @@ const meta = {
       control: "boolean",
       description: "비활성화 상태 여부",
     },
+    type: {
+      control: "select",
+      options: ["button", "submit", "reset"],
+      description: "버튼 타입 (button/submit/reset)",
+    },
   },
-} satisfies Meta<typeof Button>;
+} satisfies Meta<typeof BaseButton>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

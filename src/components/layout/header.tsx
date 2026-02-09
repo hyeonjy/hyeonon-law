@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sheet";
 import { Menu, Scale, X } from "lucide-react";
 import { User, users } from "@/mocks/users";
-import { Button } from "../ui/button";
+import { BaseButton } from "../ui/base-button";
 
 // 1. 네비게이션 데이터 정의
 const NAV_ITEMS = [
@@ -45,7 +45,7 @@ export function Header() {
   const isLoggedIn = !!user;
 
   return (
-    <header className="w-full border-b border-[#d9d7d2] bg-white">
+    <header className="w-full border-b border-grayscale-300 bg-white">
       <div className="mx-auto flex h-[64px] max-w-[1216px] items-center justify-between px-4 xl:px-0">
         {/* 좌측: 로고 */}
         <Logo />
@@ -56,7 +56,7 @@ export function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="font-pretendard text-base text-[#1a1a1a]"
+              className="font-pretendard text-base text-grayscale-500"
             >
               {item.label}
             </Link>
@@ -69,7 +69,7 @@ export function Header() {
             <UserDropDown user={user} />
           ) : (
             <Link href={ROUTES.LOGIN}>
-              <button className="h-8 rounded-lg border-[#d9d7d2] bg-[#f8f7f4] px-4 py-1 text-sm font-medium text-[#1a1a1a] hover:bg-gray-100">
+              <button className="h-8 rounded-lg border-grayscale-300 bg-grayscale-100 px-4 py-1 text-sm font-medium text-grayscale-500 hover:bg-gray-100">
                 로그인
               </button>
             </Link>
@@ -89,7 +89,7 @@ const Logo = () => (
   <Link href={ROUTES.HOME} className="flex items-center gap-2">
     {/* 로고 아이콘 자리 (SVG) */}
     <Scale className="w-6 h-6 text-secondary-100" />
-    <span className="font-pretendard text-base font-semibold leading-6 text-[#0f2942]">
+    <span className="font-pretendard text-base font-semibold leading-6 text-primary-100">
       법무법인 현온
     </span>
   </Link>
@@ -122,7 +122,7 @@ const MobileMenu = ({ user }: { user: User | null }) => (
     <Sheet>
       <SheetTrigger asChild>
         <button className="flex items-center justify-center p-2">
-          <Menu className="size-6 text-[#1a1a1a]" />
+          <Menu className="size-6 text-grayscale-500" />
           <span className="sr-only">메뉴 열기</span>
         </button>
       </SheetTrigger>
@@ -131,7 +131,7 @@ const MobileMenu = ({ user }: { user: User | null }) => (
         className="flex flex-col p-0"
         showCloseButton={false}
       >
-        <SheetHeader className="flex h-[64px] flex-row items-center justify-between px-4 border-b border-[#d9d7d2]">
+        <SheetHeader className="flex h-[64px] flex-row items-center justify-between px-4 border-b border-grayscale-300">
           <SheetTitle>
             <Scale className="w-6 h-6 text-secondary-100" />
           </SheetTitle>
@@ -150,7 +150,7 @@ const MobileMenu = ({ user }: { user: User | null }) => (
               <Link
                 href={item.href}
                 key={item.label}
-                className="font-pretendard text-base font-medium text-[#1a1a1a]"
+                className="font-pretendard text-base font-medium text-grayscale-500"
               >
                 {item.label}
               </Link>
@@ -178,7 +178,7 @@ const MobileMenu = ({ user }: { user: User | null }) => (
               </div>
             ) : (
               <Link href={ROUTES.LOGIN} className="block w-full">
-                <Button label="로그인" />
+                <BaseButton label="로그인" />
               </Link>
             )}
           </div>
