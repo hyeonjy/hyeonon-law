@@ -1,3 +1,4 @@
+import { UseFormRegisterReturn } from "react-hook-form";
 import { ErrorMessage } from "./error-message";
 import Label from "./label";
 
@@ -12,12 +13,14 @@ export interface IDefaultTextFieldProps {
   isError?: boolean;
   /** isError가 true일 때 표시할 에러 메시지 */
   errorMessage?: string;
-  /** 입력 값 */
-  value?: string;
-  /** 변경 핸들러 */
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   /** 입력 타입 (text, password, email 등) */
   type?: string;
+  /** 추가적인 className */
+  className?: string;
+  /** react-hook-form의 register 반환값 */
+  register?: UseFormRegisterReturn;
+  /** 여러 줄 입력 여부 (textarea 사용) */
+  multiline?: boolean;
 }
 
 export const DefaultTextField = ({
@@ -26,10 +29,14 @@ export const DefaultTextField = ({
   showIcon = false,
   isError = false,
   errorMessage = "",
-  value = "",
-  onChange,
   type = "text",
+  className,
+  register,
+  multiline = false,
 }: IDefaultTextFieldProps) => {
+  const baseStyles =
+    "w-full rounded-lg bg-white/[0.002] px-3 text-sm text-grayscale-500 border border-grayscale-200 outline-none shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] focus:shadow-[0_1px_3px_0_rgba(0,0,0,0.1)]";
+
   return (
     <div className="w-full relative text-field">
       {/* Label */}
@@ -37,13 +44,20 @@ export const DefaultTextField = ({
         {label}
       </Label>
 
-      <input
-        id={htmlFor}
-        type={type}
-        value={value}
-        onChange={onChange}
-        className="h-9 w-full rounded-lg bg-white/[0.002] px-3 text-sm text-grayscale-500 border border-grayscale-200 outline-none shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] focus:shadow-[0_1px_3px_0_rgba(0,0,0,0.1)]"
-      />
+      {multiline ? (
+        <textarea
+          id={htmlFor}
+          {...register}
+          className={`${baseStyles} ${className} py-2 resize-none`}
+        />
+      ) : (
+        <input
+          id={htmlFor}
+          type={type}
+          {...register}
+          className={`${baseStyles} ${className} h-9`}
+        />
+      )}
 
       {/* Error Message */}
       {isError && errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}

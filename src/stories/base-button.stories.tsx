@@ -29,6 +29,11 @@ const meta = {
       control: "boolean",
       description: "비활성화 상태 여부",
     },
+    type: {
+      control: "select",
+      options: ["button", "submit", "reset"],
+      description: "버튼 타입 (button/submit/reset)",
+    },
   },
 } satisfies Meta<typeof BaseButton>;
 

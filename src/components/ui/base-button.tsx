@@ -5,6 +5,8 @@ interface IBaseButtonProps {
   label: string;
   /** 버튼 스타일 종류 */
   variant?: "primary" | "outline";
+  /** 버튼 타입 */
+  type?: "button" | "submit" | "reset";
   /** 비활성화 상태 */
   disabled?: boolean;
   /** 클릭 핸들러 */
@@ -14,6 +16,7 @@ interface IBaseButtonProps {
 export const BaseButton = ({
   label,
   variant = "primary",
+  type = "button",
   disabled = false,
   onClick,
 }: IBaseButtonProps) => {
@@ -31,7 +34,12 @@ export const BaseButton = ({
   );
 
   return (
-    <button className={buttonStyles} onClick={onClick} disabled={disabled}>
+    <button
+      type={type}
+      className={buttonStyles}
+      onClick={onClick}
+      disabled={disabled}
+    >
       {label}
     </button>
   );
