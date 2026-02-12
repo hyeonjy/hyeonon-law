@@ -3,7 +3,7 @@ import React from "react";
 
 export const HeroSection = () => {
   return (
-    <section className="relative w-full h-[600px] overflow-hidden">
+    <section className="relative h-96 md:h-[600px] overflow-hidden">
       {/* 법무법인 배경 이미지 */}
       <Image
         src="/images/home-banner.jpg"
