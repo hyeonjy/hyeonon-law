@@ -9,7 +9,7 @@ export function Footer() {
           {/* 로고 영역 */}
           <div className="flex items-center gap-2">
             <Scale className="h-6 w-6 text-white" />
-            <span className="font-pretendard text-lg font-semibold leading-7">
+            <span className="text-lg font-semibold leading-7">
               법무법인 현온
             </span>
           </div>
@@ -24,7 +24,7 @@ export function Footer() {
 
         {/* 우측: 저작권 */}
         <div className="mt-8 md:mt-0">
-          <p className="font-pretendard text-sm font-normal leading-5">
+          <p className="text-sm font-normal leading-5">
             © 현온 법무법인. All rights reserved.
           </p>
         </div>

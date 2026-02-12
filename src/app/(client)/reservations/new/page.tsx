@@ -2,7 +2,7 @@ import { ReservationForm } from "@/features/reservations/components/reservation-
 
 export default function ReservationNewPage() {
   return (
-    <main className="w-full bg-white mx-auto max-w-[672px] px-4 py-24 ">
+    <main className="w-full bg-white mx-auto max-w-[672px] px-4 py-24">
       {/* 페이지 제목 및 설명 */}
       <div className="mb-10 space-y-4">
         <h1 className="text-5xl font-bold leading-[48px] text-primary-100">

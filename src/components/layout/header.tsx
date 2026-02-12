@@ -56,7 +56,7 @@ export function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="font-pretendard text-base text-grayscale-500"
+              className="text-base text-grayscale-500"
             >
               {item.label}
             </Link>
@@ -89,7 +89,7 @@ const Logo = () => (
   <Link href={ROUTES.HOME} className="flex items-center gap-2">
     {/* 로고 아이콘 자리 (SVG) */}
     <Scale className="w-6 h-6 text-secondary-100" />
-    <span className="font-pretendard text-base font-semibold leading-6 text-primary-100">
+    <span className="text-base font-semibold leading-6 text-primary-100">
       법무법인 현온
     </span>
   </Link>
@@ -102,9 +102,7 @@ const UserDropDown = ({ user }: { user: User }) => (
         <AvatarImage src={user.avatar_url || ""} alt={user.name || "User"} />
         <AvatarFallback>{user.name?.[0] || "U"}</AvatarFallback>
       </Avatar>
-      <span className="font-pretendard text-[15px] font-normal text-black">
-        {user.name}
-      </span>
+      <span className="text-[15px] font-normal text-black">{user.name}</span>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end" className="w-[160px]">
       {USER_MENUS(user.is_admin).map((menu) => (
@@ -150,7 +148,7 @@ const MobileMenu = ({ user }: { user: User | null }) => (
               <Link
                 href={item.href}
                 key={item.label}
-                className="font-pretendard text-base font-medium text-grayscale-500"
+                className="text-base font-medium text-grayscale-500"
               >
                 {item.label}
               </Link>
