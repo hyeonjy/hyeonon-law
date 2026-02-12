@@ -95,7 +95,7 @@ export function ReservationForm() {
       className="space-y-[30px] rounded-[14px] border border-grayscale-300 bg-white p-8"
     >
       {/* 성함 + 연락처 */}
-      <div className="flex gap-6">
+      <div className="flex flex-col gap-[30px] md:flex-row md:gap-6">
         <DefaultTextField
           htmlFor="name"
           label="성함"
