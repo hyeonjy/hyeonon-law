@@ -6,7 +6,7 @@ export const HeroSection = () => {
     <section className="relative w-full h-[600px] overflow-hidden">
       {/* 법무법인 배경 이미지 */}
       <Image
-        src="/images/banner.jpg"
+        src="/images/home-banner.jpg"
         alt="법무법인 현온 메인 배너"
         fill
         className="object-cover object-[50%_30%]"
