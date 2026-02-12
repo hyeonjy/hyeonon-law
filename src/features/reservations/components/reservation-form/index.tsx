@@ -71,30 +71,15 @@ export function ReservationForm() {
   // 선택된 날짜 감지
   const selectedDate = watch("date");
 
-  // 예약된 시간대 필터링
-  const availableTimeSlots = useMemo(() => {
-    if (!selectedDate) return [];
-
-    const dateString = selectedDate.toISOString().split("T")[0];
-    const reservedTimes = reservations
-      .filter((reservation) => {
-        const reservationDate = new Date(reservation.consult_at)
-          .toISOString()
-          .split("T")[0];
-        return reservationDate === dateString;
-      })
-      .map((reservation) => {
-        const date = new Date(reservation.consult_at);
-        const hours = date.getHours();
-        return `${hours.toString().padStart(2, "0")}:00-${(hours + 1).toString().padStart(2, "0")}:00`;
-      });
-
-    return TIME_SLOTS.map((slot) => ({
-      value: slot,
-      label: slot,
-      disabled: reservedTimes.includes(slot),
-    }));
-  }, [selectedDate]);
+  /**
+   * TODO: 추후 Supabase 연동 시 예약된 시간대는 제외 하고 날짜 선택을 가능하게 필터링 예정
+   * 현재는 UI 확인을 위해 단순 매핑만 수행
+   */
+  const timeOptions = TIME_SLOTS.map((slot) => ({
+    value: slot,
+    label: slot,
+    disabled: false, // 로직 구현 전까지는 모두 선택 가능하도록 처리
+  }));
 
   // 사건유형 옵션
   const caseTypeOptions = caseTypes.map((caseType) => ({
@@ -190,7 +175,7 @@ export function ReservationForm() {
       {/* 상담시간 */}
       <SelectField
         label="상담시간"
-        options={selectedDate ? availableTimeSlots : []}
+        options={selectedDate ? timeOptions : []}
         value={watch("time")}
         onChange={(value) => setValue("time", value, { shouldValidate: true })}
         error={errors.time?.message}
