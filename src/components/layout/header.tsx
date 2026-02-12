@@ -45,7 +45,7 @@ export function Header() {
   const isLoggedIn = !!user;
 
   return (
-    <header className="w-full border-b border-grayscale-300 bg-white">
+    <header className="fixed top-0 left-0 z-10 w-full border-b border-grayscale-300 bg-white">
       <div className="mx-auto flex h-[64px] max-w-[1216px] items-center justify-between px-4 xl:px-0">
         {/* 좌측: 로고 */}
         <Logo />
