@@ -12,11 +12,11 @@ import { StatusBadge } from "./status-badge";
 import Link from "next/link";
 import { ROUTES } from "@/constants/url";
 
-interface ReservationTableProps {
+interface IReservationTableProps {
   data: Reservation[];
 }
 
-export const ReservationTable = ({ data }: ReservationTableProps) => {
+export const ReservationTable = ({ data }: IReservationTableProps) => {
   const getCaseTypeName = (id: string) => {
     return caseTypes.find((type) => type.id === id)?.name || "미정";
   };
