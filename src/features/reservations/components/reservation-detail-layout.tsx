@@ -4,7 +4,7 @@ import { caseTypes } from "@/mocks/case_types";
 
 import { formatDate } from "date-fns";
 import { ko } from "date-fns/locale";
-import { ReservationDetailHeader } from "../reservation-detail-header";
+import { ReservationDetailHeader } from "./reservation-detail-header";
 
 interface ReservationDetailLayoutProps {
   reservation: Reservation;

@@ -1,4 +1,4 @@
-import { MyReservationList } from "@/features/reservations/components/my-reservation-list";
+import { AdminReservationList } from "@/features/reservations/components/admin-reservation-list";
 
 export default function AdminReservationsPage() {
   return (
@@ -12,7 +12,7 @@ export default function AdminReservationsPage() {
         </p>
       </div>
 
-      <MyReservationList />
+      <AdminReservationList />
     </div>
   );
 }

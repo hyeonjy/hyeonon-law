@@ -4,7 +4,7 @@ import { Reservation } from "@/mocks/reservations";
 import { ChevronLeft, Edit2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { StatusBadge } from "./components/status-badge";
+import { StatusBadge } from "./status-badge";
 import { ROUTES } from "@/constants/url";
 
 interface IReservationDetailHeaderProps {
