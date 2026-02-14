@@ -9,6 +9,8 @@ import {
 import { Reservation } from "@/mocks/reservations";
 import { caseTypes } from "@/mocks/case_types";
 import { StatusBadge } from "./status-badge";
+import Link from "next/link";
+import { ROUTES } from "@/constants/url";
 
 interface ReservationTableProps {
   data: Reservation[];
@@ -52,19 +54,44 @@ export const ReservationTable = ({ data }: ReservationTableProps) => {
             className="border-grayscale-300 hover:bg-grayscale-200/50"
           >
             <TableCell className="font-semibold text-primary-100">
-              {reservation.name}
+              <Link
+                href={ROUTES.reservationDetail(reservation.id)}
+                className="block w-full"
+              >
+                {reservation.name}
+              </Link>
             </TableCell>
             <TableCell className="text-grayscale-500">
-              {reservation.phone}
+              <Link
+                href={ROUTES.reservationDetail(reservation.id)}
+                className="block w-full"
+              >
+                {reservation.phone}
+              </Link>
             </TableCell>
             <TableCell className="text-grayscale-500">
-              {getCaseTypeName(reservation.case_type_id)}
+              <Link
+                href={ROUTES.reservationDetail(reservation.id)}
+                className="block w-full"
+              >
+                {getCaseTypeName(reservation.case_type_id)}
+              </Link>
             </TableCell>
             <TableCell className="text-grayscale-500" suppressHydrationWarning>
-              {formatDate(reservation.consult_at)}
+              <Link
+                href={ROUTES.reservationDetail(reservation.id)}
+                className="block w-full"
+              >
+                {formatDate(reservation.consult_at)}
+              </Link>
             </TableCell>
             <TableCell>
-              <StatusBadge status={reservation.status} />
+              <Link
+                href={ROUTES.reservationDetail(reservation.id)}
+                className="block w-full"
+              >
+                <StatusBadge status={reservation.status} />
+              </Link>
             </TableCell>
           </TableRow>
         ))}
