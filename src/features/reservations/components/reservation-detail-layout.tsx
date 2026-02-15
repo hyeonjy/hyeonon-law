@@ -5,6 +5,7 @@ import { caseTypes } from "@/mocks/case_types";
 import { formatDate } from "date-fns";
 import { ko } from "date-fns/locale";
 import { ReservationDetailHeader } from "./reservation-detail-header";
+import { StatusCard } from "./admin-reservation-detail/status-card";
 
 interface ReservationDetailLayoutProps {
   reservation: Reservation;
@@ -23,10 +24,8 @@ export const ReservationDetailLayout = ({
         <BasicInfoCard reservation={reservation} />
         <ConsultationInfoCard reservation={reservation} />
 
-        {/* 관리자 전용 섹션: isAdmin이 true일 때만 렌더링 */}
-        {isAdmin && (
-          <>{/* TODO: StatusAdminCard currentStatus={reservation.status} */}</>
-        )}
+        {/* 관리자 전용 섹션 */}
+        {isAdmin && <StatusCard currentStatus={reservation.status} />}
       </div>
     </div>
   );

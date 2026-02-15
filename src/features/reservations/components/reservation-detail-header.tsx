@@ -28,7 +28,7 @@ export const ReservationDetailHeader = ({
     <>
       {/* 상단: 목록으로 돌아가기 링크 */}
       <Link
-        href={ROUTES.RESERVATIONS}
+        href={isAdmin ? ROUTES.ADMIN.RESERVATIONS : ROUTES.RESERVATIONS}
         className="flex items-center gap-2 text-primary-100 hover:text-primary-100/80 mb-8"
       >
         <ChevronLeft className="h-4 w-4" />

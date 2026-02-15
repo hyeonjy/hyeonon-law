@@ -14,9 +14,17 @@ import { ROUTES } from "@/constants/url";
 
 interface IReservationTableProps {
   data: Reservation[];
+  isAdmin?: boolean;
 }
 
-export const ReservationTable = ({ data }: IReservationTableProps) => {
+export const ReservationTable = ({
+  data,
+  isAdmin = false,
+}: IReservationTableProps) => {
+  const href = isAdmin
+    ? ROUTES.ADMIN.reservationDetail
+    : ROUTES.reservationDetail;
+
   const getCaseTypeName = (id: string) => {
     return caseTypes.find((type) => type.id === id)?.name || "미정";
   };
@@ -54,42 +62,27 @@ export const ReservationTable = ({ data }: IReservationTableProps) => {
             className="border-grayscale-300 hover:bg-grayscale-200/50"
           >
             <TableCell className="font-semibold text-primary-100">
-              <Link
-                href={ROUTES.reservationDetail(reservation.id)}
-                className="block w-full"
-              >
+              <Link href={href(reservation.id)} className="block w-full">
                 {reservation.name}
               </Link>
             </TableCell>
             <TableCell className="text-grayscale-500">
-              <Link
-                href={ROUTES.reservationDetail(reservation.id)}
-                className="block w-full"
-              >
+              <Link href={href(reservation.id)} className="block w-full">
                 {reservation.phone}
               </Link>
             </TableCell>
             <TableCell className="text-grayscale-500">
-              <Link
-                href={ROUTES.reservationDetail(reservation.id)}
-                className="block w-full"
-              >
+              <Link href={href(reservation.id)} className="block w-full">
                 {getCaseTypeName(reservation.case_type_id)}
               </Link>
             </TableCell>
             <TableCell className="text-grayscale-500" suppressHydrationWarning>
-              <Link
-                href={ROUTES.reservationDetail(reservation.id)}
-                className="block w-full"
-              >
+              <Link href={href(reservation.id)} className="block w-full">
                 {formatDate(reservation.consult_at)}
               </Link>
             </TableCell>
             <TableCell>
-              <Link
-                href={ROUTES.reservationDetail(reservation.id)}
-                className="block w-full"
-              >
+              <Link href={href(reservation.id)} className="block w-full">
                 <StatusBadge status={reservation.status} />
               </Link>
             </TableCell>
