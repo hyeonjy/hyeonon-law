@@ -1,4 +1,4 @@
-import About from "@/features/about";
+import About from "@/features/about/components";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

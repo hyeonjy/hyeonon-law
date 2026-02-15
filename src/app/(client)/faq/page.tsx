@@ -1,5 +1,5 @@
+import { FAQSection } from "@/features/faq/components";
 import { Metadata } from "next";
-import { FAQSection } from "@/features/faq";
 
 export const metadata: Metadata = {
   title: "법무법인 현온 | 자주 묻는 질문",
