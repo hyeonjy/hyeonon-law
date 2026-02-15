@@ -1,6 +1,16 @@
+"use client";
+
 import { Scale } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export function Footer() {
+  const pathname = usePathname();
+
+  // '/chat' 경로일 경우 아무것도 렌더링하지 않음
+  if (pathname === "/chat") {
+    return null;
+  }
+
   return (
     <footer className="w-full bg-black text-white">
       <div className="mx-auto flex w-full max-w-[1216px] flex-col justify-between px-4 py-12 md:flex-row md:items-end xl:px-0">
