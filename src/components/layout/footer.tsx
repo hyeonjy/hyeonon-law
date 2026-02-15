@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 export function Footer() {
   const pathname = usePathname();
 
-  // '/chat' 경로일 경우 아무것도 렌더링하지 않음
-  if (pathname === "/chat") {
+  // 채팅방 경로일 경우 아무것도 렌더링하지 않음
+  if (pathname === "/chat" || pathname.startsWith("/admin/chats/")) {
     return null;
   }
 

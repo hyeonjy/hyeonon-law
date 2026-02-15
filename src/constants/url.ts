@@ -10,7 +10,7 @@
  *
  * <Link href={ROUTES.HOME}>홈으로</Link>
  * <Link href={ROUTES.reservationDetail('123')}>예약 상세</Link>
- * <Link href={ROUTES.chatDetail('abc')}>채팅방</Link>
+ * <Link href={ROUTES.ADMIN.chatDetail('abc')}>채팅방</Link>
  *
  * @example
  * // useRouter 훅에서 사용
@@ -20,7 +20,7 @@
  * const router = useRouter();
  * router.push(ROUTES.LOGIN);
  * router.push(ROUTES.ADMIN.reservationDetail('456'));
- * router.push(ROUTES.chatDetail('789'));
+ * router.push(ROUTES.ADMIN.chatDetail('789'));
  */
 
 /**
@@ -58,14 +58,8 @@ export const ROUTES = {
   reservationDetail: (reservedId: string): string =>
     `/reservations/${reservedId}`,
 
-  /**
-   * 채팅 상세 페이지 (동적 라우팅)
-   * @param chatId - 채팅방 ID
-   * @returns 채팅 페이지 경로
-   * @example
-   * ROUTES.chatDetail('123') // '/chat/123'
-   */
-  chatDetail: (chatId: string): string => `/chat/${chatId}`,
+  /** 사용자 채팅 페이지 */
+  CHAT: "/chat",
 
   /** 관리자 관련 경로 */
   ADMIN: {
@@ -84,6 +78,15 @@ export const ROUTES = {
 
     /** 관리자 채팅 목록 조회 페이지 */
     CHATS: "/admin/chats",
+
+    /**
+     * 관리자 채팅 상세 조회 페이지 (동적 라우팅)
+     * @param chatId - 채팅방 ID
+     * @returns 관리자 채팅 상세 페이지 경로
+     * @example
+     * ROUTES.ADMIN.chatDetail('789') // '/admin/chats/789'
+     */
+    chatDetail: (chatId: string): string => `/admin/chats/${chatId}`,
   },
 } as const;
 
@@ -105,5 +108,6 @@ export type StaticRoute =
   | typeof ROUTES.SIGNUP
   | typeof ROUTES.RESERVATION_NEW
   | typeof ROUTES.RESERVATIONS
+  | typeof ROUTES.CHAT
   | typeof ROUTES.ADMIN.RESERVATIONS
   | typeof ROUTES.ADMIN.CHATS;

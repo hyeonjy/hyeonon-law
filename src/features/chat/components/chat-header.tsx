@@ -4,9 +4,10 @@ import { ROUTES } from "@/constants/url";
 
 interface IChatHeaderProps {
   isAdmin?: boolean;
+  title?: string;
 }
 
-export function ChatHeader({ isAdmin = false }: IChatHeaderProps) {
+export function ChatHeader({ isAdmin = false, title }: IChatHeaderProps) {
   return (
     <>
       <header className="fixed top-[65px] w-full z-10 flex h-14 items-center border-b bg-white ">
@@ -16,7 +17,9 @@ export function ChatHeader({ isAdmin = false }: IChatHeaderProps) {
               <ChevronLeft className="h-6 w-6 text-gray-900" />
             </Link>
           )}
-          <h1 className="text-lg font-bold text-gray-900">현온 상담 채팅</h1>
+          <h1 className="text-lg font-bold text-gray-900">
+            {isAdmin ? title : "현온 상담 채팅"}
+          </h1>
         </div>
       </header>
 
