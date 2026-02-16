@@ -36,7 +36,8 @@ export const chatMessages: ChatMessage[] = [
     id: "cm4ebc99-9c0b-4ef8-bb6d-6bb9bd380cm4",
     room_id: chatRooms[0].id,
     sender_id: users[0].id, // Admin
-    content: "상담 비용은 시간당 비용으로 책정됩니다.",
+    content:
+      "상담 비용은 시간당 비용으로 책정됩니다. 더 자세한 내용은 상담을 통해 안내해드리겠습니다. 예약을 원하시면 헤더의 상담예약을 클릭해주세요",
     created_at: new Date(Date.now() - 1000 * 60 * 7).toISOString(), // 7 mins ago
   },
 
