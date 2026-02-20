@@ -1,58 +1,42 @@
 "use client";
 
+import { useActionState, startTransition, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Link from "next/link";
 import Image from "next/image";
 import { DefaultTextField } from "@/components/ui/default-textfield";
 import { BaseButton } from "@/components/ui/base-button";
 import { ROUTES } from "@/constants/url";
 import { Button } from "@/components/ui/button";
-
-const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, { message: "이메일을 입력해주세요." })
-    .email({ message: "이메일 형식이 올바르지 않습니다." })
-    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
-      message: "이메일 형식이 올바르지 않습니다.",
-    }),
-  password: z
-    .string()
-    .min(1, { message: "비밀번호를 입력해주세요." })
-    .min(6, {
-      message: "비밀번호는 영문, 숫자, 특수문자를 포함하여 6~20자여야 합니다.",
-    })
-    .max(20, {
-      message: "비밀번호는 영문, 숫자, 특수문자를 포함하여 6~20자여야 합니다.",
-    })
-    .regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,20}$/, {
-      message: "비밀번호는 영문, 숫자, 특수문자를 포함하여 6~20자여야 합니다.",
-    }),
-});
-
-type LoginSchemaType = z.infer<typeof loginSchema>;
+import { ErrorMessage } from "@/components/ui/error-message";
+import { loginAction } from "../../actions/login";
+import { LoginSchemaType } from "../../actions/login/schema";
+import { loginSchema } from "../../actions/login/schema";
 
 export const LoginForm = () => {
+  const [state, formAction, isPending] = useActionState(loginAction, null);
+  const formRef = useRef<HTMLFormElement>(null);
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<LoginSchemaType>({
     resolver: zodResolver(loginSchema),
     mode: "onChange",
   });
 
-  const onSubmit = (data: LoginSchemaType) => {
-    // 실제 로그인 로직은 아직 구현하지 않음 (하드코딩 원칙)
-    console.log("Login submitted:", data);
-  };
-
   return (
     <>
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        ref={formRef}
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(() => {
+            startTransition(() => formAction(new FormData(formRef.current!)));
+          })(e);
+        }}
         className="flex flex-col gap-[30px] mb-8"
       >
         <div className="flex flex-col gap-[30px]">
@@ -73,7 +57,15 @@ export const LoginForm = () => {
             errorMessage={errors.password?.message}
           />
         </div>
-        <BaseButton type="submit" label="로그인" variant="primary" />
+        <BaseButton
+          type="submit"
+          label={isPending ? "로그인 중..." : "로그인"}
+          variant="primary"
+          disabled={isPending}
+        />
+        {state && !state.success && state.message && (
+          <ErrorMessage>{state.message}</ErrorMessage>
+        )}
       </form>
 
       {/* SNS 로그인 */}
