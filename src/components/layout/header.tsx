@@ -108,7 +108,7 @@ type DbUser = {
 };
 
 const UserDropDown = ({ user }: { user: DbUser }) => (
-  <DropdownMenu>
+  <DropdownMenu modal={false}>
     <DropdownMenuTrigger className="flex items-center gap-2 outline-none">
       <Avatar className="size-[30px]">
         <AvatarImage src={user.avatar_url || ""} alt={user.name || "User"} />
@@ -123,7 +123,7 @@ const UserDropDown = ({ user }: { user: DbUser }) => (
         </DropdownMenuItem>
       ))}
       <DropdownMenuItem className="cursor-pointer" asChild>
-        <LogoutButton />
+        <LogoutButton className="w-full hover:bg-accent hover:text-accent-foreground" />
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
