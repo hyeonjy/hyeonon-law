@@ -57,7 +57,7 @@ export const LoginForm = () => {
       >
         <div className="flex flex-col gap-[30px]">
           <DefaultTextField
-            htmlFor="email"
+            name="email"
             label="이메일"
             type="email"
             register={register("email")}
@@ -65,7 +65,7 @@ export const LoginForm = () => {
             errorMessage={errors.email?.message}
           />
           <DefaultTextField
-            htmlFor="password"
+            name="password"
             label="비밀번호"
             type="password"
             register={register("password")}

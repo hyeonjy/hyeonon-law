@@ -97,7 +97,7 @@ export function ReservationForm() {
       {/* 성함 + 연락처 */}
       <div className="flex flex-col gap-[30px] md:flex-row md:gap-6">
         <DefaultTextField
-          htmlFor="name"
+          name="name"
           label="성함"
           showIcon
           register={register("name")}
@@ -107,7 +107,7 @@ export function ReservationForm() {
         />
 
         <DefaultTextField
-          htmlFor="phone"
+          name="phone"
           label="연락처"
           showIcon
           register={register("phone")}
@@ -119,7 +119,7 @@ export function ReservationForm() {
 
       {/* 이메일 */}
       <DefaultTextField
-        htmlFor="email"
+        name="email"
         label="이메일"
         type="email"
         showIcon
@@ -130,7 +130,7 @@ export function ReservationForm() {
 
       {/* 내용 */}
       <DefaultTextField
-        htmlFor="content"
+        name="content"
         label="내용"
         showIcon
         register={register("content")}
