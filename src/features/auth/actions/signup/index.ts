@@ -53,5 +53,5 @@ export async function signupAction(
   }
 
   // redirect()는 try/catch 밖에서 호출해야 함
-  redirect(ROUTES.LOGIN);
+  redirect(ROUTES.HOME);
 }

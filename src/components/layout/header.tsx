@@ -17,8 +17,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu, Scale, X } from "lucide-react";
-import { User, users } from "@/mocks/users";
 import { BaseButton } from "../ui/base-button";
+import { createSupabaseServer } from "@/lib/supabase/server";
+import { getAuth } from "@/features/users/services/get-auth";
+import { getUserById } from "@/features/users/services/get-user-by-id";
+import { redirect } from "next/navigation";
 
 // 1. 네비게이션 데이터 정의
 const NAV_ITEMS = [
@@ -36,12 +39,13 @@ const USER_MENUS = (isAdmin: boolean) =>
       ]
     : [{ label: "예약 조회", href: ROUTES.RESERVATIONS }];
 
-export function Header() {
-  // FIXME: 인증 기능 구현 전까지 임시로 사용할 사용자 상태
-  // null: 로그아웃 상태
-  // users[0]: 관리자 로그인 상태
-  // users[1]: 일반 사용자 로그인 상태
-  const user = users[0];
+export async function Header() {
+  // 1. Supabase 서버 클라이언트 생성 후 인증 여부 확인
+  const supabase = await createSupabaseServer();
+  const authUser = await getAuth(supabase);
+
+  // 2. 인증된 경우 유저 정보 조회
+  const user = authUser ? await getUserById(supabase, authUser.id) : null;
   const isLoggedIn = !!user;
 
   return (
@@ -95,7 +99,14 @@ const Logo = () => (
   </Link>
 );
 
-const UserDropDown = ({ user }: { user: User }) => (
+type DbUser = {
+  id: string;
+  name: string | null;
+  avatar_url: string | null;
+  is_admin: boolean;
+};
+
+const UserDropDown = ({ user }: { user: DbUser }) => (
   <DropdownMenu>
     <DropdownMenuTrigger className="flex items-center gap-2 outline-none">
       <Avatar className="size-[30px]">
@@ -115,7 +126,7 @@ const UserDropDown = ({ user }: { user: User }) => (
   </DropdownMenu>
 );
 
-const MobileMenu = ({ user }: { user: User | null }) => (
+const MobileMenu = ({ user }: { user: DbUser | null }) => (
   <div className="md:hidden">
     <Sheet>
       <SheetTrigger asChild>
