@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/sheet";
 import { Menu, Scale, X } from "lucide-react";
 import { BaseButton } from "../ui/base-button";
+import { LogoutButton } from "@/features/auth/components/logout";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { getAuth } from "@/features/users/services/get-auth";
 import { getUserById } from "@/features/users/services/get-user-by-id";
@@ -121,7 +122,9 @@ const UserDropDown = ({ user }: { user: DbUser }) => (
           <Link href={menu.href}>{menu.label}</Link>
         </DropdownMenuItem>
       ))}
-      <DropdownMenuItem className="cursor-pointer">로그아웃</DropdownMenuItem>
+      <DropdownMenuItem className="cursor-pointer" asChild>
+        <LogoutButton />
+      </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 );
@@ -175,14 +178,12 @@ const MobileMenu = ({ user }: { user: DbUser | null }) => (
                     <Link
                       key={menu.label}
                       href={menu.href}
-                      className="py-2 text-base text-gray-600"
+                      className="py-2 text-base text-gray-600 hover:text-primary-100"
                     >
                       {menu.label}
                     </Link>
                   ))}
-                  <button className="py-2 text-left text-base text-gray-600">
-                    로그아웃
-                  </button>
+                  <LogoutButton className="py-2 text-left text-base text-gray-600 hover:text-primary-100" />
                 </div>
               </div>
             ) : (
