@@ -9,7 +9,7 @@ const meta = {
   },
   tags: ["autodocs"],
   argTypes: {
-    htmlFor: {
+    name: {
       control: "text",
       description: "입력 요소의 ID",
     },
@@ -46,14 +46,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    htmlFor: "name",
+    name: "name",
     label: "이름",
   },
 };
 
 export const WithRequiredIcon: Story = {
   args: {
-    htmlFor: "name",
+    name: "name",
     label: "성함",
     showIcon: true,
   },
@@ -61,7 +61,7 @@ export const WithRequiredIcon: Story = {
 
 export const WithError: Story = {
   args: {
-    htmlFor: "email",
+    name: "email",
     label: "이메일",
     showIcon: true,
     isError: true,

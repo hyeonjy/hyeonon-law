@@ -3,8 +3,6 @@ import { ErrorMessage } from "./error-message";
 import Label from "./label";
 
 export interface IDefaultTextFieldProps {
-  /** 라벨과 input의 id를 연결할 값 */
-  htmlFor: string;
   /** 입력 필드 위에 표시되는 라벨 텍스트 */
   label: string;
   /** 라벨 옆에 필수 아이콘(*) 표시 여부 */
@@ -19,12 +17,13 @@ export interface IDefaultTextFieldProps {
   className?: string;
   /** react-hook-form의 register 반환값 */
   register?: UseFormRegisterReturn;
+  /** 네이티브 form 전송을 위한 식별자 */
+  name: string;
   /** 여러 줄 입력 여부 (textarea 사용) */
   multiline?: boolean;
 }
 
 export const DefaultTextField = ({
-  htmlFor,
   label,
   showIcon = false,
   isError = false,
@@ -32,6 +31,7 @@ export const DefaultTextField = ({
   type = "text",
   className,
   register,
+  name,
   multiline = false,
 }: IDefaultTextFieldProps) => {
   const baseStyles =
@@ -40,19 +40,21 @@ export const DefaultTextField = ({
   return (
     <div className="w-full relative text-field">
       {/* Label */}
-      <Label htmlFor={htmlFor} showIcon={showIcon}>
+      <Label htmlFor={name} showIcon={showIcon}>
         {label}
       </Label>
 
       {multiline ? (
         <textarea
-          id={htmlFor}
+          id={name}
+          name={name}
           {...register}
           className={`${baseStyles} ${className} py-2 resize-none`}
         />
       ) : (
         <input
-          id={htmlFor}
+          id={name}
+          name={name}
           type={type}
           {...register}
           className={`${baseStyles} ${className} h-9`}
