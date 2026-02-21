@@ -1,11 +1,15 @@
-import { reservations } from "@/mocks/reservations";
 import { ReservationTable } from "../reservation-table";
+import { Reservation } from "../../types";
 
-export const AdminReservationList = () => {
+interface IAdminReservationListProps {
+  data: Reservation[];
+}
+
+export const AdminReservationList = ({ data }: IAdminReservationListProps) => {
   // TODO: 페이지네이션 구현
   return (
     <>
-      <ReservationTable data={reservations} isAdmin={true} />
+      <ReservationTable data={data ?? []} isAdmin={true} />
     </>
   );
 };

@@ -36,8 +36,21 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // 로그인하지 않은 상태에서 /reservations로 접근 시 홈으로 리다이렉트.
-  if (!user && request.nextUrl.pathname === "/reservations") {
+  // 로그인하지 않은 상태에서 /reservations/* 접근 시 홈으로 리다이렉트.
+  // 단, /reservations/new 페이지는 비로그인 접근 허용.
+  const pathname = request.nextUrl.pathname;
+  if (
+    !user &&
+    pathname.startsWith("/reservations") &&
+    !pathname.startsWith("/reservations/new")
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
+
+  // 로그인하지 않은 상태에서 /admin/* 경로 접근 시 홈으로 리다이렉트.
+  if (!user && request.nextUrl.pathname.startsWith("/admin")) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     return NextResponse.redirect(url);
