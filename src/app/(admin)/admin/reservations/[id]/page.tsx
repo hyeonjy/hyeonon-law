@@ -1,6 +1,7 @@
-import { reservations } from "@/mocks/reservations";
 import { notFound } from "next/navigation";
 import { AdminReservationDetail } from "@/features/reservations/components/admin-reservation-detail";
+import { createSupabaseServer } from "@/lib/supabase/server";
+import { getReservationById } from "@/features/reservations/services/get-reservation-by-id";
 
 interface IReservationDetailPageProps {
   params: Promise<{
@@ -13,9 +14,14 @@ export default async function AdminReservationDetailPage({
 }: IReservationDetailPageProps) {
   const { id } = await params;
 
-  // Mock 데이터에서 해당 ID의 예약 정보 찾기
-  // 실제 구현에서는 API 호출 등으로 대체됨
-  const reservation = reservations.find((r) => r.id === id);
+  const supabase = await createSupabaseServer();
+
+  let reservation;
+  try {
+    reservation = await getReservationById(supabase, id);
+  } catch {
+    notFound();
+  }
 
   if (!reservation) {
     notFound();

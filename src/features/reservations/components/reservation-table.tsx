@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Reservation } from "@/mocks/reservations";
+import { Reservation } from "@/features/reservations/types";
 import { caseTypes } from "@/mocks/case_types";
 import { StatusBadge } from "./status-badge";
 import Link from "next/link";

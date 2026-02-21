@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { ReservationStatus } from "@/mocks/reservations";
+import { ReservationStatus } from "@/features/reservations/types";
 
 interface StatusCardProps {
   currentStatus: ReservationStatus;

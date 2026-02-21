@@ -118,9 +118,9 @@ const UserDropDown = ({ user }: { user: DbUser }) => (
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end" className="w-[160px]">
       {USER_MENUS(user.is_admin).map((menu) => (
-        <DropdownMenuItem key={menu.href}>
-          <Link href={menu.href}>{menu.label}</Link>
-        </DropdownMenuItem>
+        <Link key={menu.href} href={menu.href}>
+          <DropdownMenuItem>{menu.label}</DropdownMenuItem>
+        </Link>
       ))}
       <DropdownMenuItem className="cursor-pointer" asChild>
         <LogoutButton className="w-full hover:bg-accent hover:text-accent-foreground" />

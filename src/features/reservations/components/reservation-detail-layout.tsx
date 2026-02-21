@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Reservation } from "@/mocks/reservations";
+import { Reservation } from "@/features/reservations/types";
 import { caseTypes } from "@/mocks/case_types";
 
 import { formatDate } from "date-fns";
