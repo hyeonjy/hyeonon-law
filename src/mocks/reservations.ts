@@ -1,21 +1,12 @@
 import { users } from "./users";
 import { caseTypes } from "./case_types";
+import type { Reservation } from "@/features/reservations/types";
 
-export type ReservationStatus = "접수" | "확인중" | "완료" | "취소";
-
-export interface Reservation {
-  id: string;
-  user_id: string | null;
-  name: string;
-  phone: string;
-  email: string;
-  content: string;
-  case_type_id: string;
-  consult_at: string;
-  status: ReservationStatus;
-  created_at: string;
-  updated_at: string;
-}
+// 타입은 features/reservations/types에서 관리
+export type {
+  Reservation,
+  ReservationStatus,
+} from "@/features/reservations/types";
 
 export const reservations: Reservation[] = [
   {

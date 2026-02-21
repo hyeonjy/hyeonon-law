@@ -1,11 +1,15 @@
-import { reservations } from "@/mocks/reservations";
+import { Reservation } from "@/features/reservations/types";
 import { ReservationTable } from "../reservation-table";
 
-export const MyReservationList = () => {
+interface IMyReservationListProps {
+  data: Reservation[];
+}
+
+export const MyReservationList = ({ data }: IMyReservationListProps) => {
   // TODO: 페이지네이션 구현
   return (
     <>
-      <ReservationTable data={reservations} />
+      <ReservationTable data={data} />
     </>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { Reservation } from "@/mocks/reservations";
+import { Reservation } from "@/features/reservations/types";
 import { ChevronLeft, Edit2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";

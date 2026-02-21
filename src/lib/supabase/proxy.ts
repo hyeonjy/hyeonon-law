@@ -36,5 +36,12 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // 로그인하지 않은 상태에서 /reservations로 접근 시 홈으로 리다이렉트.
+  if (!user && request.nextUrl.pathname === "/reservations") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
+
   return supabaseResponse;
 }

@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { ReservationStatus } from "@/mocks/reservations";
+import { ReservationStatus } from "@/features/reservations/types";
 import { cn } from "@/lib/utils";
 
 interface StatusBadgeProps {
