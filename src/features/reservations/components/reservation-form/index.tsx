@@ -1,38 +1,20 @@
 "use client";
 
+import { useActionState, startTransition, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useMemo } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { DefaultTextField } from "@/components/ui/default-textfield";
 import { SelectField } from "./select-field";
 import { DateField } from "./date-field";
 import { CheckboxField } from "./checkbox-field";
 import { FormAction } from "./form-action";
 import { caseTypes } from "@/mocks/case_types";
-import { reservations } from "@/mocks/reservations";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-// Zod 스키마 정의
-const reservationSchema = z.object({
-  name: z.string().min(1, "성함을 입력해주세요"),
-  phone: z.string().min(1, "연락처를 입력해주세요"),
-  email: z
-    .string()
-    .min(1, "이메일을 입력해주세요")
-    .email("올바른 이메일 형식이 아닙니다"),
-  content: z.string().min(1, "상담 내용을 입력해주세요"),
-  caseTypeId: z.string().min(1, "사건유형을 선택해주세요"),
-  date: z.date({
-    required_error: "상담날짜를 선택해주세요",
-    invalid_type_error: "올바른 날짜를 선택해주세요",
-  }),
-  time: z.string().min(1, "상담시간을 선택해주세요"),
-  agreePrivacy: z.boolean().refine((val) => val === true, {
-    message: "개인정보 이용에 동의해주세요",
-  }),
-});
-
-type ReservationFormData = z.infer<typeof reservationSchema>;
+import { createReservationAction } from "@/features/reservations/actions/create-reservation";
+import {
+  CreateReservationSchema,
+  CreateReservationInput,
+} from "@/features/reservations/actions/create-reservation/schema";
+import { ErrorMessage } from "@/components/ui/error-message";
 
 // 상담시간 슬롯 (10:00-16:00, 점심시간 12:00-13:00 제외)
 const TIME_SLOTS = [
@@ -44,15 +26,21 @@ const TIME_SLOTS = [
 ];
 
 export function ReservationForm() {
+  const [state, formAction, isPending] = useActionState(
+    createReservationAction,
+    null,
+  );
+  const formRef = useRef<HTMLFormElement>(null);
+
   const {
     register,
     handleSubmit,
     watch,
     setValue,
-    formState: { errors, isSubmitting },
-  } = useForm<ReservationFormData>({
+    formState: { errors },
+  } = useForm<CreateReservationInput>({
     mode: "onChange",
-    resolver: zodResolver(reservationSchema),
+    resolver: zodResolver(CreateReservationSchema),
     defaultValues: {
       name: "",
       phone: "",
@@ -83,15 +71,24 @@ export function ReservationForm() {
     label: caseType.name,
   }));
 
-  // 폼 제출 핸들러
-  const onSubmit = (data: ReservationFormData) => {
-    console.log("예약 데이터:", data);
-    // TODO: API 호출로 교체 예정
-  };
-
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      ref={formRef}
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit((data) => {
+          startTransition(() => {
+            // DefaultTextField(name, phone, email, content)는 formRef에서 자동 수집
+            // 커스텀 컴포넌트 필드는 data 객체에서 직접 추가
+            const formData = new FormData(formRef.current!);
+            formData.set("date", data.date.toISOString());
+            formData.set("caseTypeId", data.caseTypeId);
+            formData.set("time", data.time);
+            formData.set("agreePrivacy", String(data.agreePrivacy));
+            formAction(formData);
+          });
+        })(e);
+      }}
       className="space-y-[30px] rounded-[14px] border border-grayscale-300 bg-white p-8"
     >
       {/* 성함 + 연락처 */}
@@ -188,8 +185,13 @@ export function ReservationForm() {
         error={errors.agreePrivacy?.message}
       />
 
+      {/* 서버 에러 메시지 */}
+      {state && !state.success && state.message && (
+        <ErrorMessage>{state.message}</ErrorMessage>
+      )}
+
       {/* 버튼 및 알림 */}
-      <FormAction isSubmitting={isSubmitting} />
+      <FormAction isSubmitting={isPending} />
     </form>
   );
 }
