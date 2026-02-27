@@ -10,11 +10,13 @@ import { CheckboxField } from "./checkbox-field";
 import { FormAction } from "./form-action";
 import { caseTypes } from "@/mocks/case_types";
 import { createReservationAction } from "@/features/reservations/actions/create-reservation";
+import { getReservedTimesAction } from "@/features/reservations/actions/get-reserved-times";
 import {
   CreateReservationSchema,
   CreateReservationInput,
 } from "@/features/reservations/actions/create-reservation/schema";
 import { ErrorMessage } from "@/components/ui/error-message";
+import { useState, useEffect } from "react";
 
 // 상담시간 슬롯 (10:00-16:00, 점심시간 12:00-13:00 제외)
 const TIME_SLOTS = [
@@ -54,15 +56,47 @@ export function ReservationForm() {
 
   // 선택된 날짜 감지
   const selectedDate = watch("date");
+  const [reservedTimes, setReservedTimes] = useState<string[]>([]);
+  const [isCheckingTimes, setIsCheckingTimes] = useState(false);
 
-  /**
-   * TODO: 추후 Supabase 연동 시 예약된 시간대는 제외 하고 날짜 선택을 가능하게 필터링 예정
-   * 현재는 UI 확인을 위해 단순 매핑만 수행
-   */
+  // 날짜가 바뀔 때마다 해당 날짜의 예약된 시간을 서버 액션으로 조회
+  useEffect(() => {
+    if (!selectedDate) {
+      setReservedTimes([]);
+      return;
+    }
+
+    const checkReservedTimes = async () => {
+      setIsCheckingTimes(true);
+      try {
+        const year = selectedDate.getFullYear();
+        const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+        const day = String(selectedDate.getDate()).padStart(2, "0");
+        const dateStr = `${year}-${month}-${day}`;
+
+        const times = await getReservedTimesAction(dateStr);
+        setReservedTimes(times);
+
+        // 만약 사용자가 이미 클릭해둔 시간이 나중에 보니 '예약됨' 상태라면 값 초기화
+        const currentTime = watch("time");
+        if (currentTime && times.includes(currentTime)) {
+          setValue("time", "", { shouldValidate: true });
+        }
+      } catch (error) {
+        console.error("예약된 시간 체크 실패", error);
+      } finally {
+        setIsCheckingTimes(false);
+      }
+    };
+
+    checkReservedTimes();
+  }, [selectedDate]);
+
+  // 옵션 데이터 가공 (이미 예약된 시간은 disabled 처리)
   const timeOptions = TIME_SLOTS.map((slot) => ({
     value: slot,
     label: slot,
-    disabled: false, // 로직 구현 전까지는 모두 선택 가능하도록 처리
+    disabled: reservedTimes.includes(slot) || isCheckingTimes,
   }));
 
   // 사건유형 옵션

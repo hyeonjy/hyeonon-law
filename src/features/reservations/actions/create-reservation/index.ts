@@ -34,9 +34,15 @@ export async function createReservationAction(
   const { name, phone, email, content, caseTypeId, date, time } =
     validated.data;
 
-  const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const dateStr = `${year}-${month}-${day}`;
+
   const startTime = time.split("-")[0]; // "10:00-11:00" → "10:00"
-  const consultAt = `${dateStr} ${startTime}`;
+
+  // "YYYY-MM-DD HH:mm:ss+09:00" 형식으로 KST 타임존 정보를 명시하여 저장
+  const consultAt = `${dateStr} ${startTime}:00+09:00`;
 
   const supabase = await createSupabaseServer();
 
