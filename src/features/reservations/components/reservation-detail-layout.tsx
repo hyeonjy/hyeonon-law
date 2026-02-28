@@ -25,7 +25,12 @@ export const ReservationDetailLayout = ({
         <ConsultationInfoCard reservation={reservation} />
 
         {/* 관리자 전용 섹션 */}
-        {isAdmin && <StatusCard currentStatus={reservation.status} />}
+        {isAdmin && (
+          <StatusCard
+            reservationId={reservation.id}
+            currentStatus={reservation.status}
+          />
+        )}
       </div>
     </div>
   );
