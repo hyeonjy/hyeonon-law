@@ -1,38 +1,27 @@
 "use client";
 
+import { useActionState, startTransition, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useMemo } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { DefaultTextField } from "@/components/ui/default-textfield";
 import { SelectField } from "./select-field";
 import { DateField } from "./date-field";
 import { CheckboxField } from "./checkbox-field";
 import { FormAction } from "./form-action";
 import { caseTypes } from "@/mocks/case_types";
-import { reservations } from "@/mocks/reservations";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-// Zod 스키마 정의
-const reservationSchema = z.object({
-  name: z.string().min(1, "성함을 입력해주세요"),
-  phone: z.string().min(1, "연락처를 입력해주세요"),
-  email: z
-    .string()
-    .min(1, "이메일을 입력해주세요")
-    .email("올바른 이메일 형식이 아닙니다"),
-  content: z.string().min(1, "상담 내용을 입력해주세요"),
-  caseTypeId: z.string().min(1, "사건유형을 선택해주세요"),
-  date: z.date({
-    required_error: "상담날짜를 선택해주세요",
-    invalid_type_error: "올바른 날짜를 선택해주세요",
-  }),
-  time: z.string().min(1, "상담시간을 선택해주세요"),
-  agreePrivacy: z.boolean().refine((val) => val === true, {
-    message: "개인정보 이용에 동의해주세요",
-  }),
-});
-
-type ReservationFormData = z.infer<typeof reservationSchema>;
+import { createReservationAction } from "@/features/reservations/actions/create-reservation";
+import { updateReservationAction } from "@/features/reservations/actions/update-reservation";
+import { getReservedTimesAction } from "@/features/reservations/actions/get-reserved-times";
+import {
+  CreateReservationSchema,
+  CreateReservationInput,
+} from "@/features/reservations/actions/create-reservation/schema";
+import {
+  UpdateReservationSchema,
+  UpdateReservationInput,
+} from "@/features/reservations/actions/update-reservation/schema";
+import { ErrorMessage } from "@/components/ui/error-message";
+import { useState, useEffect } from "react";
 
 // 상담시간 슬롯 (10:00-16:00, 점심시간 12:00-13:00 제외)
 const TIME_SLOTS = [
@@ -43,38 +32,116 @@ const TIME_SLOTS = [
   "15:00-16:00",
 ];
 
-export function ReservationForm() {
+// 수정 모드에서 사용하는 defaultValues 타입
+interface EditDefaultValues {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  content: string;
+  caseTypeId: string;
+  date: Date;
+  time: string;
+}
+
+interface ReservationFormProps {
+  mode?: "create" | "edit";
+  defaultValues?: EditDefaultValues;
+}
+
+export function ReservationForm({
+  mode = "create",
+  defaultValues,
+}: ReservationFormProps) {
+  const isEditMode = mode === "edit";
+
+  const [state, formAction, isPending] = useActionState(
+    isEditMode ? updateReservationAction : createReservationAction,
+    null,
+  );
+
+  const formRef = useRef<HTMLFormElement>(null);
+
   const {
     register,
     handleSubmit,
     watch,
     setValue,
-    formState: { errors, isSubmitting },
-  } = useForm<ReservationFormData>({
+    formState: { errors },
+  } = useForm<CreateReservationInput | UpdateReservationInput>({
     mode: "onChange",
-    resolver: zodResolver(reservationSchema),
-    defaultValues: {
-      name: "",
-      phone: "",
-      email: "",
-      content: "",
-      caseTypeId: "",
-      time: "",
-      agreePrivacy: false,
-    },
+    resolver: zodResolver(
+      isEditMode ? UpdateReservationSchema : CreateReservationSchema,
+    ),
+    defaultValues: defaultValues
+      ? {
+          id: defaultValues.id,
+          name: defaultValues.name,
+          phone: defaultValues.phone,
+          email: defaultValues.email,
+          content: defaultValues.content,
+          caseTypeId: defaultValues.caseTypeId,
+          date: defaultValues.date,
+          time: defaultValues.time,
+          agreePrivacy: true,
+        }
+      : {
+          name: "",
+          phone: "",
+          email: "",
+          content: "",
+          caseTypeId: "",
+          time: "",
+          agreePrivacy: false,
+        },
   });
 
   // 선택된 날짜 감지
   const selectedDate = watch("date");
+  const [reservedTimes, setReservedTimes] = useState<string[]>([]);
+  const [isCheckingTimes, setIsCheckingTimes] = useState(false);
 
-  /**
-   * TODO: 추후 Supabase 연동 시 예약된 시간대는 제외 하고 날짜 선택을 가능하게 필터링 예정
-   * 현재는 UI 확인을 위해 단순 매핑만 수행
-   */
+  // 날짜가 바뀔 때마다 해당 날짜의 예약된 시간을 서버 액션으로 조회
+  useEffect(() => {
+    if (!selectedDate) {
+      setReservedTimes([]);
+      return;
+    }
+
+    const checkReservedTimes = async () => {
+      setIsCheckingTimes(true);
+      try {
+        const year = selectedDate.getFullYear();
+        const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+        const day = String(selectedDate.getDate()).padStart(2, "0");
+        const dateStr = `${year}-${month}-${day}`;
+
+        const times = await getReservedTimesAction(dateStr);
+        setReservedTimes(times);
+
+        // 만약 사용자가 이미 클릭해둔 시간이 나중에 보니 '예약됨' 상태라면 값 초기화
+        // 단, 수정 모드에서 기존 예약 시간은 본인 예약이므로 초기화하지 않음
+        const currentTime = watch("time");
+        const isOriginalEditTime =
+          isEditMode && currentTime === defaultValues?.time;
+        if (currentTime && times.includes(currentTime) && !isOriginalEditTime) {
+          setValue("time", "", { shouldValidate: true });
+        }
+      } catch (error) {
+        console.error("예약된 시간 체크 실패", error);
+      } finally {
+        setIsCheckingTimes(false);
+      }
+    };
+
+    checkReservedTimes();
+  }, [selectedDate]);
+
+  // 옵션 데이터 가공 (이미 예약된 시간은 disabled 처리)
   const timeOptions = TIME_SLOTS.map((slot) => ({
     value: slot,
     label: slot,
-    disabled: false, // 로직 구현 전까지는 모두 선택 가능하도록 처리
+    disabled: reservedTimes.includes(slot) || isCheckingTimes,
   }));
 
   // 사건유형 옵션
@@ -83,15 +150,30 @@ export function ReservationForm() {
     label: caseType.name,
   }));
 
-  // 폼 제출 핸들러
-  const onSubmit = (data: ReservationFormData) => {
-    console.log("예약 데이터:", data);
-    // TODO: API 호출로 교체 예정
-  };
-
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      ref={formRef}
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit((data) => {
+          startTransition(() => {
+            // DefaultTextField(name, phone, email, content)는 formRef에서 자동 수집
+            // 커스텀 컴포넌트 필드는 data 객체에서 직접 추가
+            const formData = new FormData(formRef.current!);
+            formData.set("date", data.date.toISOString());
+            formData.set("caseTypeId", data.caseTypeId);
+            formData.set("time", data.time);
+            formData.set("agreePrivacy", String(data.agreePrivacy));
+
+            // 수정 모드일 때 id 추가
+            if (isEditMode && defaultValues?.id) {
+              formData.set("id", defaultValues.id);
+            }
+
+            formAction(formData);
+          });
+        })(e);
+      }}
       className="space-y-[30px] rounded-[14px] border border-grayscale-300 bg-white p-8"
     >
       {/* 성함 + 연락처 */}
@@ -188,8 +270,13 @@ export function ReservationForm() {
         error={errors.agreePrivacy?.message}
       />
 
+      {/* 서버 에러 메시지 */}
+      {state && !state.success && state.message && (
+        <ErrorMessage>{state.message}</ErrorMessage>
+      )}
+
       {/* 버튼 및 알림 */}
-      <FormAction isSubmitting={isSubmitting} />
+      <FormAction isSubmitting={isPending} />
     </form>
   );
 }

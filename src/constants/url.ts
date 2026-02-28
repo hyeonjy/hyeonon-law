@@ -58,6 +58,16 @@ export const ROUTES = {
   reservationDetail: (reservedId: string): string =>
     `/reservations/${reservedId}`,
 
+  /**
+   * 내 예약 수정 페이지 (동적 라우팅)
+   * @param reservedId - 예약 ID
+   * @returns 예약 수정 페이지 경로
+   * @example
+   * ROUTES.reservationEdit('123') // '/reservations/123/edit'
+   */
+  reservationEdit: (reservedId: string): string =>
+    `/reservations/${reservedId}/edit`,
+
   /** 사용자 채팅 페이지 */
   CHAT: "/chat",
 
@@ -75,6 +85,16 @@ export const ROUTES = {
      */
     reservationDetail: (reservedId: string): string =>
       `/admin/reservations/${reservedId}`,
+
+    /**
+     * 관리자 예약 수정 페이지 (동적 라우팅)
+     * @param reservedId - 예약 ID
+     * @returns 관리자 예약 수정 페이지 경로
+     * @example
+     * ROUTES.ADMIN.reservationEdit('789') // '/admin/reservations/789/edit'
+     */
+    reservationEdit: (reservedId: string): string =>
+      `/admin/reservations/${reservedId}/edit`,
 
     /** 관리자 채팅 목록 조회 페이지 */
     CHATS: "/admin/chats",

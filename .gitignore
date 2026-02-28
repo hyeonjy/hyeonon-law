@@ -46,3 +46,6 @@ next-env.d.ts
 prompts/
 *storybook.log
 storybook-static
+
+# Supabase
+supabase/migrations/
