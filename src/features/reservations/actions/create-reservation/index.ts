@@ -6,6 +6,7 @@ import { createSupabaseServer } from "@/lib/supabase/server";
 import { createReservation } from "@/features/reservations/services/create-reservation";
 import { CreateReservationSchema } from "./schema";
 import { ActionState } from "./types";
+import { ROUTES } from "@/constants/url";
 
 export async function createReservationAction(
   _prevState: ActionState | null,
@@ -71,6 +72,6 @@ export async function createReservationAction(
   }
 
   // redirect()는 try/catch 밖에서 호출
-  revalidatePath("/reservations");
-  redirect("/reservations");
+  revalidatePath(ROUTES.RESERVATIONS);
+  redirect(ROUTES.RESERVATIONS);
 }
