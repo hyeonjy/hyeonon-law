@@ -1,11 +1,15 @@
 "use client";
 
+import { useActionState, startTransition } from "react";
 import { Reservation } from "@/features/reservations/types";
 import { ChevronLeft, Edit2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "./status-badge";
 import { ROUTES } from "@/constants/url";
+import { deleteReservationAction } from "@/features/reservations/actions/delete-reservation";
+import { ActionState } from "@/features/reservations/actions/delete-reservation/types";
+import { ErrorMessage } from "@/components/ui/error-message";
 
 interface IReservationDetailHeaderProps {
   reservation: Reservation;
@@ -16,12 +20,22 @@ export const ReservationDetailHeader = ({
   reservation,
   isAdmin,
 }: IReservationDetailHeaderProps) => {
+  const [state, dispatchAction, isPending] = useActionState(
+    (
+      _: ActionState | null,
+      payload: { reservationId: string; isAdmin: boolean },
+    ) => deleteReservationAction(payload.reservationId, payload.isAdmin),
+    null,
+  );
+
   const handleEdit = () => {
     console.log("Edit reservation:", reservation.id);
   };
 
   const handleDelete = () => {
-    console.log("Delete reservation:", reservation.id);
+    startTransition(() => {
+      dispatchAction({ reservationId: reservation.id, isAdmin });
+    });
   };
 
   return (
@@ -34,6 +48,9 @@ export const ReservationDetailHeader = ({
         <ChevronLeft className="h-4 w-4" />
         <span className="text-base">예약 목록으로 돌아가기</span>
       </Link>
+
+      {/* 에러 메시지 */}
+      {state && !state.success && <ErrorMessage>{state.message}</ErrorMessage>}
 
       {/* 하단: 타이틀 + 뱃지 + 액션 버튼 */}
       <div className="flex items-center justify-between mb-8">
@@ -58,6 +75,7 @@ export const ReservationDetailHeader = ({
             size="icon"
             className="text-primary-100 hover:text-white hover:bg-primary-100 bg-transparent cursor-pointer"
             onClick={handleDelete}
+            disabled={isPending}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
