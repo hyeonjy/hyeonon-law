@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, startTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Reservation } from "@/features/reservations/types";
 import { ChevronLeft, Edit2, Trash2 } from "lucide-react";
 import Link from "next/link";
@@ -20,6 +21,7 @@ export const ReservationDetailHeader = ({
   reservation,
   isAdmin,
 }: IReservationDetailHeaderProps) => {
+  const router = useRouter();
   const [state, dispatchAction, isPending] = useActionState(
     (
       _: ActionState | null,
@@ -29,7 +31,10 @@ export const ReservationDetailHeader = ({
   );
 
   const handleEdit = () => {
-    console.log("Edit reservation:", reservation.id);
+    const editRoute = isAdmin
+      ? ROUTES.ADMIN.reservationEdit(reservation.id)
+      : ROUTES.reservationEdit(reservation.id);
+    router.push(editRoute);
   };
 
   const handleDelete = () => {

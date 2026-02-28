@@ -10,11 +10,16 @@ import { CheckboxField } from "./checkbox-field";
 import { FormAction } from "./form-action";
 import { caseTypes } from "@/mocks/case_types";
 import { createReservationAction } from "@/features/reservations/actions/create-reservation";
+import { updateReservationAction } from "@/features/reservations/actions/update-reservation";
 import { getReservedTimesAction } from "@/features/reservations/actions/get-reserved-times";
 import {
   CreateReservationSchema,
   CreateReservationInput,
 } from "@/features/reservations/actions/create-reservation/schema";
+import {
+  UpdateReservationSchema,
+  UpdateReservationInput,
+} from "@/features/reservations/actions/update-reservation/schema";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { useState, useEffect } from "react";
 
@@ -27,11 +32,34 @@ const TIME_SLOTS = [
   "15:00-16:00",
 ];
 
-export function ReservationForm() {
+// 수정 모드에서 사용하는 defaultValues 타입
+interface EditDefaultValues {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  content: string;
+  caseTypeId: string;
+  date: Date;
+  time: string;
+}
+
+interface ReservationFormProps {
+  mode?: "create" | "edit";
+  defaultValues?: EditDefaultValues;
+}
+
+export function ReservationForm({
+  mode = "create",
+  defaultValues,
+}: ReservationFormProps) {
+  const isEditMode = mode === "edit";
+
   const [state, formAction, isPending] = useActionState(
-    createReservationAction,
+    isEditMode ? updateReservationAction : createReservationAction,
     null,
   );
+
   const formRef = useRef<HTMLFormElement>(null);
 
   const {
@@ -40,18 +68,32 @@ export function ReservationForm() {
     watch,
     setValue,
     formState: { errors },
-  } = useForm<CreateReservationInput>({
+  } = useForm<CreateReservationInput | UpdateReservationInput>({
     mode: "onChange",
-    resolver: zodResolver(CreateReservationSchema),
-    defaultValues: {
-      name: "",
-      phone: "",
-      email: "",
-      content: "",
-      caseTypeId: "",
-      time: "",
-      agreePrivacy: false,
-    },
+    resolver: zodResolver(
+      isEditMode ? UpdateReservationSchema : CreateReservationSchema,
+    ),
+    defaultValues: defaultValues
+      ? {
+          id: defaultValues.id,
+          name: defaultValues.name,
+          phone: defaultValues.phone,
+          email: defaultValues.email,
+          content: defaultValues.content,
+          caseTypeId: defaultValues.caseTypeId,
+          date: defaultValues.date,
+          time: defaultValues.time,
+          agreePrivacy: true,
+        }
+      : {
+          name: "",
+          phone: "",
+          email: "",
+          content: "",
+          caseTypeId: "",
+          time: "",
+          agreePrivacy: false,
+        },
   });
 
   // 선택된 날짜 감지
@@ -78,8 +120,11 @@ export function ReservationForm() {
         setReservedTimes(times);
 
         // 만약 사용자가 이미 클릭해둔 시간이 나중에 보니 '예약됨' 상태라면 값 초기화
+        // 단, 수정 모드에서 기존 예약 시간은 본인 예약이므로 초기화하지 않음
         const currentTime = watch("time");
-        if (currentTime && times.includes(currentTime)) {
+        const isOriginalEditTime =
+          isEditMode && currentTime === defaultValues?.time;
+        if (currentTime && times.includes(currentTime) && !isOriginalEditTime) {
           setValue("time", "", { shouldValidate: true });
         }
       } catch (error) {
@@ -119,6 +164,12 @@ export function ReservationForm() {
             formData.set("caseTypeId", data.caseTypeId);
             formData.set("time", data.time);
             formData.set("agreePrivacy", String(data.agreePrivacy));
+
+            // 수정 모드일 때 id 추가
+            if (isEditMode && defaultValues?.id) {
+              formData.set("id", defaultValues.id);
+            }
+
             formAction(formData);
           });
         })(e);
