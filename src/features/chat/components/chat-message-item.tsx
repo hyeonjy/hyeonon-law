@@ -47,7 +47,9 @@ export function ChatMessageItem({
 
         <div className="flex items-end gap-1">
           {isMe && (
-            <span className="text-[10px] text-gray-400">{timeString}</span>
+            <span className="text-[10px] text-gray-400 whitespace-nowrap">
+              {timeString}
+            </span>
           )}
 
           <div
@@ -62,7 +64,9 @@ export function ChatMessageItem({
           </div>
 
           {!isMe && (
-            <span className="text-[10px] text-gray-400">{timeString}</span>
+            <span className="text-[10px] text-gray-400 whitespace-nowrap">
+              {timeString}
+            </span>
           )}
         </div>
       </div>

@@ -24,8 +24,6 @@ function getTimeSlotFromConsultAt(consultAt: string): string {
   const minutes = String(date.getMinutes()).padStart(2, "0");
   const startTime = `${hours}:${minutes}`;
 
-  console.log(startTime);
-
   const matched = TIME_SLOTS.find((slot) => slot.startsWith(startTime));
   return matched ?? "";
 }
