@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { FloatingChatButton } from "@/components/layout/floating-chat-button";
 
 const pretendard = localFont({
   src: "../fonts/PretendardVariable.woff2",
@@ -31,6 +32,7 @@ export default function RootLayout({
         <Header />
         <main className="pt-[65px]">{children}</main>
         <Footer />
+        <FloatingChatButton />
       </body>
     </html>
   );
