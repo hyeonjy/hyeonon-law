@@ -6,7 +6,7 @@ import { AlertTriangle } from "lucide-react";
 import { BaseButton } from "@/components/ui/base-button";
 import { ROUTES } from "@/constants/url";
 
-interface ReservationsErrorPageProps {
+interface IReservationsErrorPageProps {
   error: Error & { digest?: string };
   reset: () => void;
 }
@@ -14,7 +14,7 @@ interface ReservationsErrorPageProps {
 export default function ReservationsErrorPage({
   error,
   reset,
-}: ReservationsErrorPageProps) {
+}: IReservationsErrorPageProps) {
   useEffect(() => {
     console.error("reservations page error:", error);
   }, [error]);
