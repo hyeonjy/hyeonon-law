@@ -1,43 +1,101 @@
-import { chatRooms } from "@/mocks/chat_rooms";
-import { users } from "@/mocks/users";
-import { chatMessages } from "@/mocks/chat_messages";
+"use client";
+
+import { useEffect, useState } from "react";
+import { createSupabaseClient } from "@/lib/supabase/client";
+import { getAllChatRooms } from "../../services/get-all-chat-rooms";
 import { ChatListItem } from "./chat-list-item";
 
 export function AdminChatList() {
-  const chatListItems = chatRooms.map((room) => {
-    const requester = users.find((user) => user.id === room.requester_id);
-    // 해당 방의 메시지 중 가장 최근 메시지 찾기
-    const roomMessages = chatMessages.filter((msg) => msg.room_id === room.id);
-    const lastMessage = roomMessages.sort(
-      (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-    )[0];
+  const [chatRooms, setChatRooms] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const supabase = createSupabaseClient();
 
-    // 읽지 않은 메시지 수
-    const unreadCount = 1;
+  useEffect(() => {
+    let isMounted = true;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
 
-    return {
-      ...room,
-      requester,
-      lastMessage,
-      unreadCount,
+    const fetchRooms = async () => {
+      try {
+        const data = await getAllChatRooms(supabase as any);
+        if (isMounted) {
+          setChatRooms(data);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("채팅방 목록 로딩 에러:", error);
+      }
     };
-  });
+
+    const initRealtime = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (session?.access_token) {
+        await supabase.realtime.setAuth(session.access_token);
+      }
+
+      const channelName = `admin_chat_list_${Date.now()}`;
+
+      channel = supabase
+        .channel(channelName)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "chat_rooms" },
+          () => {
+            fetchRooms();
+          },
+        )
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "chat_messages" },
+          () => {
+            fetchRooms();
+          },
+        )
+        .subscribe();
+    };
+
+    fetchRooms().then(() => {
+      if (isMounted) initRealtime();
+    });
+
+    return () => {
+      isMounted = false;
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
+    };
+  }, [supabase]);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col w-full min-h-[600px] items-center justify-center text-gray-500 text-sm">
+        채팅방 목록을 불러오는 중...
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col w-full min-h-[600px]">
-      {chatListItems.map((item) => {
-        if (!item.requester) return null; // requester 정보가 없으면 렌더링 하지 않음 (예외처리)
-        return (
-          <ChatListItem
-            key={item.id}
-            id={item.id}
-            requester={item.requester}
-            lastMessage={item.lastMessage}
-            unreadCount={item.unreadCount}
-          />
-        );
-      })}
+      {chatRooms.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-full p-8 text-gray-500 text-sm">
+          아직 개설된 채팅방이 없습니다.
+        </div>
+      ) : (
+        chatRooms.map((room) => {
+          if (!room.requester) return null;
+
+          return (
+            <ChatListItem
+              key={room.id}
+              id={room.id}
+              requester={room.requester}
+              lastMessage={room.latest_message}
+            />
+          );
+        })
+      )}
     </div>
   );
 }
