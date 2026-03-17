@@ -5,6 +5,8 @@ import { createSupabaseClient } from "@/lib/supabase/client";
 import { getAllChatRooms } from "../../services/get-all-chat-rooms";
 import { ChatListItem } from "./chat-list-item";
 
+const CHAT_LIST_SKELETON_COUNT = 5;
+
 export function AdminChatList() {
   const [chatRooms, setChatRooms] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -70,8 +72,16 @@ export function AdminChatList() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col w-full min-h-[600px] items-center justify-center text-gray-500 text-sm">
-        채팅방 목록을 불러오는 중...
+      <div
+        className="flex w-full min-h-[600px] flex-col"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
+        <span className="sr-only">채팅방 목록을 불러오는 중...</span>
+        {Array.from({ length: CHAT_LIST_SKELETON_COUNT }).map((_, index) => (
+          <ChatListItemSkeleton key={index} />
+        ))}
       </div>
     );
   }
@@ -96,6 +106,24 @@ export function AdminChatList() {
           );
         })
       )}
+    </div>
+  );
+}
+
+function ChatListItemSkeleton() {
+  return (
+    <div className="flex items-start gap-4 border-b border-grayscale-200 p-4 last:border-b-0">
+      <div className="mt-0.5 h-12 w-12 shrink-0 animate-pulse rounded-full bg-grayscale-200" />
+
+      <div className="min-w-0 flex-1">
+        <div className="mb-1 flex items-baseline justify-between">
+          <div className="h-5 w-24 animate-pulse rounded bg-grayscale-200" />
+          <div className="ml-2 h-3 w-12 animate-pulse rounded bg-grayscale-200" />
+        </div>
+        <div className="flex items-center justify-between gap-4">
+          <div className="h-4 w-[60%] animate-pulse rounded bg-grayscale-200" />
+        </div>
+      </div>
     </div>
   );
 }
