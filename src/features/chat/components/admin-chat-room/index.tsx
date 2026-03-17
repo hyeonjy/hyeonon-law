@@ -20,16 +20,35 @@ export function AdminChatRoom({
   requester,
   currentUser,
 }: AdminChatRoomProps) {
-  const { groupedMessages, messagesEndRef, isConnected, sendMessage } =
-    useChatMessages(chatRoom.id, currentUser);
+  const {
+    groupedMessages,
+    messagesEndRef,
+    isConnected,
+    sendMessage,
+    isInitialLoading,
+  } = useChatMessages(chatRoom.id, currentUser);
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <ChatHeader isAdmin={true} title={requester.name || "상담 고객"} />
-      <ChatMessageList
-        groupedMessages={groupedMessages}
-        messagesEndRef={messagesEndRef}
-      />
+      {isInitialLoading ? (
+        <div
+          className="mt-[121px] flex flex-1 flex-col items-center justify-center bg-white pb-[36px]"
+          role="status"
+          aria-busy="true"
+          aria-live="polite"
+        >
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-grayscale-300 border-t-primary-100" />
+          <p className="mt-4 text-sm font-medium text-grayscale-400">
+            메시지를 불러오는 중입니다.
+          </p>
+        </div>
+      ) : (
+        <ChatMessageList
+          groupedMessages={groupedMessages}
+          messagesEndRef={messagesEndRef}
+        />
+      )}
       <ChatInput onSend={sendMessage} disabled={!isConnected} />
     </div>
   );

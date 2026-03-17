@@ -26,6 +26,7 @@ export function useChatMessages(roomId: string, currentUser: User) {
   // 매 렌더마다 새 인스턴스 생성 방지 (React 권장 방식: useState 초기화 함수 사용)
   const supabase = createSupabaseClient();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   // 실시간 연결 상태 - true면 연결됨, false면 끊김/문제 발생 상태
   const [isConnected, setIsConnected] = useState(false);
@@ -82,6 +83,10 @@ export function useChatMessages(roomId: string, currentUser: User) {
         });
       } catch (error) {
         console.error(error);
+      } finally {
+        if (isMounted) {
+          setIsInitialLoading(false);
+        }
       }
     };
 
@@ -342,5 +347,11 @@ export function useChatMessages(roomId: string, currentUser: User) {
     return groups;
   })();
 
-  return { groupedMessages, messagesEndRef, isConnected, sendMessage };
+  return {
+    groupedMessages,
+    messagesEndRef,
+    isConnected,
+    sendMessage,
+    isInitialLoading,
+  };
 }
