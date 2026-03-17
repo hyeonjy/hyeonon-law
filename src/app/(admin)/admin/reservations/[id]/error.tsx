@@ -19,8 +19,6 @@ export default function ReservationErrorPage({
     console.error("reservations page error:", error);
   }, [error]);
 
-  const isDev = process.env.NODE_ENV === "development";
-
   return (
     <div className="mx-auto min-h-screen max-w-6xl px-4 sm:px-6 lg:px-8 flex items-center">
       <div className="mx-auto flex max-w-2xl flex-col items-center text-center">

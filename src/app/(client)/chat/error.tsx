@@ -6,17 +6,14 @@ import { AlertTriangle } from "lucide-react";
 import { BaseButton } from "@/components/ui/base-button";
 import { ROUTES } from "@/constants/url";
 
-interface IReservationErrorPageProps {
+interface IChatErrorPageProps {
   error: Error & { digest?: string };
   reset: () => void;
 }
 
-export default function ReservationErrorPage({
-  error,
-  reset,
-}: IReservationErrorPageProps) {
+export default function ChatErrorPage({ error, reset }: IChatErrorPageProps) {
   useEffect(() => {
-    console.error("reservations page error:", error);
+    console.error("chat page error:", error);
   }, [error]);
 
   return (
@@ -27,7 +24,7 @@ export default function ReservationErrorPage({
           aria-hidden="true"
         />
         <h1 className="mt-6 text-2xl text-grayscale-500">
-          예약 상세 정보를 불러오지 못했습니다
+          채팅방을 불러오지 못했습니다
         </h1>
 
         <div className="mt-8 flex w-full max-w-sm gap-3">
