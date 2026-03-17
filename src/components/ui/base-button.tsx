@@ -22,7 +22,7 @@ export const BaseButton = ({
 }: IBaseButtonProps) => {
   const buttonStyles = cn(
     // 기본 스타일
-    "w-full h-9 rounded-lg py-2 text-sm font-medium flex items-center justify-center transition-colors",
+    "w-full h-9 rounded-lg py-2 text-sm font-medium flex items-center justify-center transition-colors cursor-pointer",
     // Variant별 스타일
     variant === "primary" &&
       "bg-primary-100 text-white hover:bg-primary-200 active:bg-primary-300",
