@@ -6,11 +6,13 @@ import { getAuth } from "@/features/users/services/get-auth";
 import { getReservationsByUserId } from "@/features/reservations/services/get-reservations-by-user-id";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import { ReservationTableSkeleton } from "@/features/reservations/components/reservation-table-skeleton";
 
-export default async function ReservationsPage() {
+async function ReservationsContent() {
   const supabase = await createSupabaseServer();
 
-  // 현재 로그인 유저 확인 (proxy에서 이미 막지만, userId를 가져오기 위해 호출)
+  // 현재 로그인 유저 확인
   const user = await getAuth(supabase);
   if (!user) {
     redirect("/");
@@ -19,6 +21,10 @@ export default async function ReservationsPage() {
   // 유저 ID로 예약 목록 조회
   const reservations = await getReservationsByUserId(supabase, user.id);
 
+  return <MyReservationList data={reservations ?? []} />;
+}
+
+export default function ReservationsPage() {
   return (
     <div className="min-h-screen max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
@@ -36,7 +42,9 @@ export default async function ReservationsPage() {
         </Link>
       </div>
 
-      <MyReservationList data={reservations ?? []} />
+      <Suspense fallback={<ReservationTableSkeleton />}>
+        <ReservationsContent />
+      </Suspense>
     </div>
   );
 }

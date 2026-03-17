@@ -6,7 +6,6 @@ interface IMyReservationListProps {
 }
 
 export const MyReservationList = ({ data }: IMyReservationListProps) => {
-  // TODO: 페이지네이션 구현
   return (
     <>
       <ReservationTable data={data} />

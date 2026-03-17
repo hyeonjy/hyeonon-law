@@ -1,13 +1,19 @@
 import { AdminReservationList } from "@/features/reservations/components/admin-reservation-list";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { getAllReservations } from "@/features/reservations/services/get-all-reservations";
+import { Suspense } from "react";
+import { ReservationTableSkeleton } from "@/features/reservations/components/reservation-table-skeleton";
 
-export default async function AdminReservationsPage() {
+async function AdminReservationsContent() {
   const supabase = await createSupabaseServer();
 
   // 전체 예약 목록 조회 (관리자는 모든 예약 조회 가능)
   const reservations = await getAllReservations(supabase);
 
+  return <AdminReservationList data={reservations ?? []} />;
+}
+
+export default function AdminReservationsPage() {
   return (
     <div className="min-h-screen max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
       <div className="space-y-2 mb-12">
@@ -19,7 +25,9 @@ export default async function AdminReservationsPage() {
         </p>
       </div>
 
-      <AdminReservationList data={reservations ?? []} />
+      <Suspense fallback={<ReservationTableSkeleton />}>
+        <AdminReservationsContent />
+      </Suspense>
     </div>
   );
 }
