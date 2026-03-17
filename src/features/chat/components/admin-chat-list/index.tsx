@@ -4,27 +4,43 @@ import { useEffect, useState } from "react";
 import { createSupabaseClient } from "@/lib/supabase/client";
 import { getAllChatRooms } from "../../services/get-all-chat-rooms";
 import { ChatListItem } from "./chat-list-item";
+import { AlertTriangle } from "lucide-react";
 
 const CHAT_LIST_SKELETON_COUNT = 5;
 
 export function AdminChatList() {
   const [chatRooms, setChatRooms] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const supabase = createSupabaseClient();
 
   useEffect(() => {
     let isMounted = true;
     let channel: ReturnType<typeof supabase.channel> | null = null;
 
-    const fetchRooms = async () => {
+    const fetchRooms = async (
+      mode: "initial" | "background" = "background",
+    ) => {
+      if (mode === "initial" && isMounted) {
+        setIsLoading(true);
+        setErrorMessage(null);
+      }
+
       try {
         const data = await getAllChatRooms(supabase as any);
         if (isMounted) {
-          setChatRooms(data);
-          setIsLoading(false);
+          setChatRooms(data ?? []);
+          setErrorMessage(null);
         }
       } catch (error) {
         console.error("채팅방 목록 로딩 에러:", error);
+        if (isMounted && mode === "initial") {
+          setErrorMessage("채팅 목록을 불러오지 못했습니다.");
+        }
+      } finally {
+        if (isMounted && mode === "initial") {
+          setIsLoading(false);
+        }
       }
     };
 
@@ -45,20 +61,20 @@ export function AdminChatList() {
           "postgres_changes",
           { event: "*", schema: "public", table: "chat_rooms" },
           () => {
-            fetchRooms();
+            fetchRooms("background");
           },
         )
         .on(
           "postgres_changes",
           { event: "*", schema: "public", table: "chat_messages" },
           () => {
-            fetchRooms();
+            fetchRooms("background");
           },
         )
         .subscribe();
     };
 
-    fetchRooms().then(() => {
+    fetchRooms("initial").then(() => {
       if (isMounted) initRealtime();
     });
 
@@ -82,6 +98,15 @@ export function AdminChatList() {
         {Array.from({ length: CHAT_LIST_SKELETON_COUNT }).map((_, index) => (
           <ChatListItemSkeleton key={index} />
         ))}
+      </div>
+    );
+  }
+
+  if (errorMessage) {
+    return (
+      <div className="flex items-center w-full gap-1">
+        <AlertTriangle className="h-5 w-5 text-red-500" aria-hidden="true" />
+        <p className="text-lg text-red-500">{errorMessage}</p>
       </div>
     );
   }
