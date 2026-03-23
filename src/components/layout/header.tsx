@@ -46,8 +46,11 @@ export async function Header() {
     // 1. Supabase 서버 클라이언트 생성 후 인증 여부 확인
     const supabase = await createSupabaseServer();
     const authUser = await getAuth(supabase);
-    // 2. 인증된 경우 유저 정보 조회
-    user = authUser ? await getUserById(supabase, authUser.id) : null;
+    // 2. 인증된 경우 유저 정보 조회 (익명 로그인은 null 처리)
+    user =
+      authUser && !authUser.is_anonymous
+        ? await getUserById(supabase, authUser.id)
+        : null;
   } catch (error) {
     console.error("인증 정보를 가져오는데 실패했습니다:", error);
     user = null;

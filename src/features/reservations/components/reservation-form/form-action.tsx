@@ -19,7 +19,7 @@ export function FormAction({ isSubmitting }: IFormActionProps) {
 
     const checkAuth = async () => {
       const user = await getAuth(supabase);
-      setIsLoggedIn(!!user);
+      setIsLoggedIn(!!user && !user.is_anonymous);
     };
 
     checkAuth();

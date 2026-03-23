@@ -27,7 +27,9 @@ export async function updateSession(request: NextRequest) {
 
   // 세션 갱신 — getUser() 대신 getClaims()로 JWT 검증
   const { data } = await supabase.auth.getClaims();
-  const user = data?.claims;
+  // 익명 로그인은 비로그인 상태와 동일하게 처리
+  const user =
+    data?.claims && !data.claims.is_anonymous ? data.claims : null;
 
   // 현재 로그인 상태이면서 경로가 /login 인 경우 홈화면으로 리다이렉트.
   if (user && request.nextUrl.pathname.startsWith("/login")) {
