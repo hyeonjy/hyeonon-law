@@ -1,19 +1,39 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BaseButton } from "@/components/ui/base-button";
 import { ROUTES } from "@/constants/url";
+import { createSupabaseClient } from "@/lib/supabase/client";
+import { getAuth } from "@/features/users/services/get-auth";
 
 interface IFormActionProps {
   isSubmitting: boolean;
 }
 
 export function FormAction({ isSubmitting }: IFormActionProps) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const supabase = createSupabaseClient();
+
+    const checkAuth = async () => {
+      const user = await getAuth(supabase);
+      setIsLoggedIn(!!user);
+    };
+
+    checkAuth();
+  }, []);
+
   return (
     <div className="space-y-6">
       {/* 버튼 그룹 */}
       <div className="flex items-center gap-3">
-        <Link href={ROUTES.LOGIN} className="flex-1">
-          <BaseButton label="로그인하기" variant="outline" />
-        </Link>
+        {!isLoggedIn && (
+          <Link href={ROUTES.LOGIN} className="flex-1">
+            <BaseButton label="로그인하기" variant="outline" />
+          </Link>
+        )}
 
         <div className="flex-1">
           <BaseButton
