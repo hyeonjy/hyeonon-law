@@ -1,6 +1,12 @@
 "use client";
 
-import { useActionState, startTransition, useRef } from "react";
+import {
+  useActionState,
+  startTransition,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -13,10 +19,23 @@ import { ErrorMessage } from "@/components/ui/error-message";
 import { loginAction } from "../../actions/login";
 import { LoginSchemaType } from "../../actions/login/schema";
 import { loginSchema } from "../../actions/login/schema";
+import { googleLoginAction } from "../../actions/google";
 
 export const LoginForm = () => {
   const [state, formAction, isPending] = useActionState(loginAction, null);
   const formRef = useRef<HTMLFormElement>(null);
+  const [googleError, setGoogleError] = useState<string | null>(null);
+  const [isGooglePending, startGoogleTransition] = useTransition();
+
+  const handleGoogleLogin = () => {
+    setGoogleError(null);
+    startGoogleTransition(async () => {
+      const result = await googleLoginAction();
+      if (result?.error) {
+        setGoogleError(result.error);
+      }
+    });
+  };
 
   const {
     register,
@@ -77,6 +96,8 @@ export const LoginForm = () => {
           type="button"
           variant="outline"
           className="w-full flex items-center justify-center gap-2 text-grayscale-500 bg-transparent"
+          onClick={handleGoogleLogin}
+          disabled={isGooglePending || isPending}
         >
           <Image
             src="/icons/auth-google.svg"
@@ -84,8 +105,13 @@ export const LoginForm = () => {
             width={16}
             height={16}
           />
-          Google로 로그인
+          {isGooglePending ? "Google 인증 중..." : "Google로 로그인"}
         </Button>
+        {googleError && (
+          <div className="mt-4">
+            <ErrorMessage>{googleError}</ErrorMessage>
+          </div>
+        )}
       </div>
 
       {/* 회원가입 링크 */}
