@@ -12,9 +12,10 @@ export default async function MyChatRoomPage() {
   const supabase = await createSupabaseServer();
   const user = await getAuth(supabase);
 
-  // 익명 로그인 완료 전 SSR 타이밍 엣지케이스 방어
+  // proxy에서 세션을 보장하므로 이 경로는 정상 흐름에서 도달하지 않음
+  // 혹시 도달하더라도 홈으로 리다이렉트
   if (!user) {
-    return;
+    redirect(ROUTES.HOME);
   }
 
   // 현재 접속 유저 정보 (DB 조회)

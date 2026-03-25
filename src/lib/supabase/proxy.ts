@@ -58,5 +58,20 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // /chat 경로 진입 시 세션이 없으면 익명 로그인 수행
+  // 서버에서 1회만 실행되므로 이중 실행 문제 완전 차단
+  if (request.nextUrl.pathname.startsWith("/chat")) {
+    const {
+      data: { user: sessionUser },
+    } = await supabase.auth.getUser();
+
+    if (!sessionUser) {
+      const { error: signInError } = await supabase.auth.signInAnonymously();
+      if (signInError) {
+        console.error("익명 로그인 실패:", signInError);
+      }
+    }
+  }
+
   return supabaseResponse;
 }
