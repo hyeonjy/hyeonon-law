@@ -1,6 +1,8 @@
 import About from "@/features/about/components";
 import type { Metadata } from "next";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "법무법인 현온 | 변호사 소개",
   description:

@@ -1,6 +1,8 @@
 import { FAQSection } from "@/features/faq/components";
 import { Metadata } from "next";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "법무법인 현온 | 자주 묻는 질문",
   description: "현온 법무법인에 대해 자주 문의되는 내용을 확인하세요.",
