@@ -95,7 +95,7 @@ export const LoginForm = () => {
         <Button
           type="button"
           variant="outline"
-          className="w-full flex items-center justify-center gap-2 text-grayscale-500 bg-transparent"
+          className="cursor-pointer w-full flex items-center justify-center gap-2 text-grayscale-500 bg-transparent"
           onClick={handleGoogleLogin}
           disabled={isGooglePending || isPending}
         >
