@@ -155,7 +155,9 @@ const MobileMenu = ({ user }: { user: DbUser | null }) => (
       >
         <SheetHeader className="flex h-[64px] flex-row items-center justify-between px-4 border-b border-grayscale-300">
           <SheetTitle>
-            <Scale className="w-6 h-6 text-secondary-100" />
+            <SheetClose asChild>
+              <Scale className="cursor-pointer w-6 h-6 text-secondary-100" />
+            </SheetClose>
           </SheetTitle>
           <SheetDescription className="sr-only">
             아래 메뉴를 선택해주세요.
@@ -169,13 +171,14 @@ const MobileMenu = ({ user }: { user: DbUser | null }) => (
         <div className="flex flex-col flex-1 px-4 py-6">
           <nav className="flex flex-col gap-8">
             {NAV_ITEMS.map((item) => (
-              <Link
-                href={item.href}
-                key={item.label}
-                className="text-base font-medium text-grayscale-500"
-              >
-                {item.label}
-              </Link>
+              <SheetClose asChild key={item.label}>
+                <Link
+                  href={item.href}
+                  className="text-base font-medium text-grayscale-500"
+                >
+                  {item.label}
+                </Link>
+              </SheetClose>
             ))}
           </nav>
 
@@ -185,21 +188,28 @@ const MobileMenu = ({ user }: { user: DbUser | null }) => (
               <div className="flex flex-col gap-4 border-t border-gray-200 pt-4">
                 <div className="flex flex-col gap-2 pl-2">
                   {USER_MENUS(user.is_admin).map((menu) => (
-                    <Link
-                      key={menu.label}
-                      href={menu.href}
-                      className="py-2 text-base text-gray-600 hover:text-primary-100"
-                    >
-                      {menu.label}
-                    </Link>
+                    <SheetClose asChild key={menu.label}>
+                      <Link
+                        href={menu.href}
+                        className="py-2 text-base text-gray-600 hover:text-primary-100"
+                      >
+                        {menu.label}
+                      </Link>
+                    </SheetClose>
                   ))}
-                  <LogoutButton className="py-2 text-left text-base text-gray-600 hover:text-primary-100" />
+                  <SheetClose asChild>
+                    <div>
+                      <LogoutButton className="py-2 text-left text-base text-gray-600 hover:text-primary-100" />
+                    </div>
+                  </SheetClose>
                 </div>
               </div>
             ) : (
-              <Link href={ROUTES.LOGIN} className="block w-full">
-                <BaseButton label="로그인" />
-              </Link>
+              <SheetClose asChild>
+                <Link href={ROUTES.LOGIN} className="block w-full">
+                  <BaseButton label="로그인" />
+                </Link>
+              </SheetClose>
             )}
           </div>
         </div>
