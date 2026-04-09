@@ -32,6 +32,29 @@ const TIME_SLOTS = [
   "15:00-16:00",
 ];
 
+// 전화번호 자동 포맷 (지역번호에 따라 대시 삽입)
+const formatPhoneNumber = (value: string) => {
+  const digits = value.replace(/\D/g, "");
+
+  if (digits.startsWith("02")) {
+    // 서울 02: 02-XXX-XXXX or 02-XXXX-XXXX
+    if (digits.length <= 5) return digits.replace(/^(\d{2})(\d+)/, "$1-$2");
+    if (digits.length <= 9)
+      return digits.replace(/^(\d{2})(\d{3})(\d+)/, "$1-$2-$3");
+    return digits.slice(0, 10).replace(/^(\d{2})(\d{4})(\d+)/, "$1-$2-$3");
+  } else if (/^01[0-9]/.test(digits)) {
+    // 휴대폰 (010~019): 무조건 0XX-XXXX-XXXX
+    if (digits.length <= 7) return digits.replace(/^(\d{3})(\d+)/, "$1-$2");
+    return digits.slice(0, 11).replace(/^(\d{3})(\d{4})(\d+)/, "$1-$2-$3");
+  } else {
+    // 지역번호 (031 등): 0XX-XXX-XXXX(10자리) or 0XX-XXXX-XXXX(11자리)
+    if (digits.length <= 6) return digits.replace(/^(\d{3})(\d+)/, "$1-$2");
+    if (digits.length <= 10)
+      return digits.replace(/^(\d{3})(\d{3})(\d+)/, "$1-$2-$3"); // 중간 3자리 고정
+    return digits.slice(0, 11).replace(/^(\d{3})(\d{4})(\d+)/, "$1-$2-$3"); // 중간 4자리 고정
+  }
+};
+
 // 수정 모드에서 사용하는 defaultValues 타입
 interface EditDefaultValues {
   id: string;
@@ -77,7 +100,7 @@ export function ReservationForm({
       ? {
           id: defaultValues.id,
           name: defaultValues.name,
-          phone: defaultValues.phone,
+          phone: formatPhoneNumber(defaultValues.phone),
           email: defaultValues.email,
           content: defaultValues.content,
           caseTypeId: defaultValues.caseTypeId,
@@ -191,8 +214,13 @@ export function ReservationForm({
         <DefaultTextField
           name="phone"
           label="연락처"
+          type="tel"
           showIcon
-          register={register("phone")}
+          register={register("phone", {
+            onChange: (event) => {
+              event.target.value = formatPhoneNumber(event.target.value);
+            },
+          })}
           isError={!!errors.phone}
           errorMessage={errors.phone?.message}
           className="flex-1"
