@@ -47,7 +47,7 @@ export function FAQList() {
           value={faq.id}
           className="border-b border-border"
         >
-          <AccordionTrigger className="hover:no-underline py-6 group">
+          <AccordionTrigger className="cursor-pointer hover:no-underline py-6 group">
             <div className="flex items-start gap-4 text-left">
               <span className="text-lg font-bold text-secondary-100 shrink-0 pt-0.5">
                 {faq.id}

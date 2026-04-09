@@ -82,7 +82,7 @@ export async function Header() {
             <UserDropDown user={user} />
           ) : (
             <Link href={ROUTES.LOGIN}>
-              <button className="h-8 rounded-lg border-grayscale-300 bg-grayscale-100 px-4 py-1 text-sm font-medium text-grayscale-500 hover:bg-gray-100">
+              <button className="cursor-pointer h-8 rounded-lg border-grayscale-300 bg-grayscale-100 px-4 py-1 text-sm font-medium text-grayscale-500 hover:bg-gray-100">
                 로그인
               </button>
             </Link>
@@ -117,7 +117,7 @@ type DbUser = {
 
 const UserDropDown = ({ user }: { user: DbUser }) => (
   <DropdownMenu modal={false}>
-    <DropdownMenuTrigger className="flex items-center gap-2 outline-none">
+    <DropdownMenuTrigger className="cursor-pointer flex items-center gap-2 outline-none">
       <Avatar className="size-[30px]">
         <AvatarImage src={user.avatar_url || ""} alt={user.name || "User"} />
         <AvatarFallback>{user.name?.[0] || "U"}</AvatarFallback>
@@ -127,7 +127,9 @@ const UserDropDown = ({ user }: { user: DbUser }) => (
     <DropdownMenuContent align="end" className="w-[160px]">
       {USER_MENUS(user.is_admin).map((menu) => (
         <Link key={menu.href} href={menu.href}>
-          <DropdownMenuItem>{menu.label}</DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer">
+            {menu.label}
+          </DropdownMenuItem>
         </Link>
       ))}
       <DropdownMenuItem className="cursor-pointer" asChild>
@@ -142,7 +144,7 @@ const MobileMenu = ({ user }: { user: DbUser | null }) => (
     <Sheet>
       <SheetTrigger asChild>
         <button className="flex items-center justify-center p-2">
-          <Menu className="size-6 text-grayscale-500" />
+          <Menu className="cursor-pointer size-6 text-grayscale-500" />
           <span className="sr-only">메뉴 열기</span>
         </button>
       </SheetTrigger>
