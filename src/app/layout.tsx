@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { cookies } from "next/headers";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { FloatingChatButton } from "@/components/layout/floating-chat-button";
+import { FlashToast } from "@/components/ui/flash-toast";
+import { TOAST } from "@/constants/flash-toast";
 
 const pretendard = localFont({
   src: "../fonts/PretendardVariable.woff2",
@@ -21,15 +24,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // 쿠키를 읽어, redirect 직후의 1회성 토스트 값 전달.
+  const cookieStore = await cookies();
+  const toastValue = cookieStore.get(TOAST.COOKIE_NAME)?.value ?? null;
+
   return (
     <html lang="ko">
       <body className={`${pretendard.className} antialiased`}>
         <Header />
+        <FlashToast toastValue={toastValue} />
         <main className="pt-[65px]">{children}</main>
         <Footer />
         <FloatingChatButton />

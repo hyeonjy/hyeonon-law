@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { updateReservation } from "@/features/reservations/services/update-reservation";
@@ -9,6 +10,11 @@ import { ActionState } from "./types";
 import { ROUTES } from "@/constants/url";
 import { getAuth } from "@/features/users/services/get-auth";
 import { getUserById } from "@/features/users/services/get-user-by-id";
+import {
+  createToastValue,
+  TOAST,
+  TOAST_CODE,
+} from "@/constants/flash-toast";
 
 export async function updateReservationAction(
   _prevState: ActionState | null,
@@ -77,6 +83,17 @@ export async function updateReservationAction(
   const detailPath = isAdmin
     ? ROUTES.ADMIN.reservationDetail(id)
     : ROUTES.reservationDetail(id);
+
+  const cookieStore = await cookies();
+  cookieStore.set(
+    TOAST.COOKIE_NAME,
+    createToastValue(TOAST_CODE.RESERVATION_UPDATED),
+    {
+      path: "/",
+      maxAge: TOAST.COOKIE_TTL_SECONDS,
+      sameSite: "lax",
+    },
+  );
 
   revalidatePath(detailPath);
   redirect(detailPath);

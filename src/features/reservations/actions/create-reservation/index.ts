@@ -1,17 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { createReservation } from "@/features/reservations/services/create-reservation";
 import { CreateReservationSchema } from "./schema";
 import { ActionState } from "./types";
 import { ROUTES } from "@/constants/url";
+import { createToastValue, TOAST, TOAST_CODE } from "@/constants/flash-toast";
 
 export async function createReservationAction(
   _prevState: ActionState | null,
   formData: FormData,
 ): Promise<ActionState> {
+  // FormData를 일반 객체로 변환해 스키마 검증 입력 사용
   const rawData = Object.fromEntries(formData.entries());
 
   // date 필드는 ISO string → Date 객체로 변환
@@ -51,6 +54,7 @@ export async function createReservationAction(
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const isLoggedInUser = !!user && !user.is_anonymous;
 
   try {
     await createReservation(supabase, {
@@ -60,7 +64,7 @@ export async function createReservationAction(
       content,
       case_type_id: caseTypeId,
       consult_at: consultAt,
-      user_id: user?.id ?? null,
+      user_id: isLoggedInUser ? user.id : null,
     });
   } catch (error: any) {
     // 네트워크 등 기타 에러
@@ -72,6 +76,17 @@ export async function createReservationAction(
   }
 
   // redirect()는 try/catch 밖에서 호출
+  const cookieStore = await cookies();
+  cookieStore.set(
+    TOAST.COOKIE_NAME,
+    createToastValue(TOAST_CODE.RESERVATION_CREATED),
+    {
+      path: "/",
+      maxAge: TOAST.COOKIE_TTL_SECONDS,
+      sameSite: "lax",
+    },
+  );
+
   revalidatePath(ROUTES.RESERVATIONS);
-  redirect(ROUTES.RESERVATIONS);
+  redirect(isLoggedInUser ? ROUTES.RESERVATIONS : ROUTES.HOME);
 }
