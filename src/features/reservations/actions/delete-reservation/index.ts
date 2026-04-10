@@ -1,10 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { deleteReservation } from "@/features/reservations/services/delete-reservation";
 import { ROUTES } from "@/constants/url";
+import { createToastValue, TOAST, TOAST_CODE } from "@/constants/flash-toast";
 import { ActionState } from "./types";
 
 export async function deleteReservationAction(
@@ -40,6 +42,18 @@ export async function deleteReservationAction(
   }
 
   const targetPath = isAdmin ? ROUTES.ADMIN.RESERVATIONS : ROUTES.RESERVATIONS;
+
+  // 삭제 완료 후 리다이렉트된 페이지에서 1회성 토스트 표시
+  const cookieStore = await cookies();
+  cookieStore.set(
+    TOAST.COOKIE_NAME,
+    createToastValue(TOAST_CODE.RESERVATION_DELETED),
+    {
+      path: "/",
+      maxAge: TOAST.COOKIE_TTL_SECONDS,
+      sameSite: "lax",
+    },
+  );
 
   revalidatePath(targetPath);
   redirect(targetPath);

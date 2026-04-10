@@ -1,8 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check } from "lucide-react";
-import { getToastMessageFromValue, TOAST } from "@/constants/flash-toast";
+import { Check, Trash } from "lucide-react";
+import {
+  getToastMessageFromValue,
+  TOAST,
+  TOAST_CODE,
+} from "@/constants/flash-toast";
 
 interface FlashToastProps {
   toastValue: string | null;
@@ -17,6 +21,8 @@ export function FlashToast({ toastValue }: FlashToastProps) {
   );
   // 쿠키 값에서 바로 노출 문구를 얻음
   const message = getToastMessageFromValue(toastValue);
+  const toastCode = toastValue?.split(":")[0] ?? null;
+  const isDeleteToast = toastCode === TOAST_CODE.RESERVATION_DELETED;
   const isVisible =
     !!toastValue && !!message && toastValue !== dismissedToastValue;
 
@@ -47,10 +53,18 @@ export function FlashToast({ toastValue }: FlashToastProps) {
       >
         <div className="flex items-center gap-2">
           <span
-            className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"
+            className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
+              isDeleteToast
+                ? "bg-red-100 text-red-600"
+                : "bg-emerald-100 text-emerald-600"
+            }`}
             aria-hidden="true"
           >
-            <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
+            {isDeleteToast ? (
+              <Trash className="h-3.5 w-3.5" strokeWidth={2.25} />
+            ) : (
+              <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
+            )}
           </span>
           <p className="text-sm font-semibold text-primary-100">{message}</p>
         </div>

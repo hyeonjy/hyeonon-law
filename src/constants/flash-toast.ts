@@ -2,6 +2,7 @@
 export const TOAST_CODE = {
   RESERVATION_CREATED: "reservation_created",
   RESERVATION_UPDATED: "reservation_updated",
+  RESERVATION_DELETED: "reservation_deleted",
 } as const;
 
 export type ToastCode = (typeof TOAST_CODE)[keyof typeof TOAST_CODE];
@@ -15,7 +16,8 @@ export const TOAST = {
   // 토스트 코드 -> 사용자 노출 문구 매핑
   MESSAGE_BY_CODE: {
     [TOAST_CODE.RESERVATION_CREATED]: "상담 예약이 정상적으로 접수되었습니다.",
-    [TOAST_CODE.RESERVATION_UPDATED]: "예약 정보가 성공적으로 수정되었습니다.",
+    [TOAST_CODE.RESERVATION_UPDATED]: "예약 정보가 수정되었습니다.",
+    [TOAST_CODE.RESERVATION_DELETED]: "예약이 삭제되었습니다.",
   },
 } as const;
 
