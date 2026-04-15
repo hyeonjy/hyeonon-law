@@ -48,7 +48,7 @@ export function SelectField({
             }
           />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="reservation-select-content">
           {options.map((option) => (
             <SelectItem
               key={option.value}

@@ -29,6 +29,11 @@
   .text-field > p {
     position: absolute;
   }
+
+  body[data-scroll-locked]:has(.reservation-select-content[data-state="open"]) {
+    overflow-y: scroll !important;
+    margin-right: 0 !important;
+  }
 }
 
 @theme {
