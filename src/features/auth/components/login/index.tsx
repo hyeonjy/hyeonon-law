@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import Image from "next/image";
+import { Eye, EyeOff } from "lucide-react";
 import { DefaultTextField } from "@/components/ui/default-textfield";
 import { BaseButton } from "@/components/ui/base-button";
 import { ROUTES } from "@/constants/url";
@@ -25,6 +26,7 @@ export const LoginForm = () => {
   const [state, formAction, isPending] = useActionState(loginAction, null);
   const formRef = useRef<HTMLFormElement>(null);
   const [googleError, setGoogleError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const [isGooglePending, startGoogleTransition] = useTransition();
 
   const handleGoogleLogin = () => {
@@ -67,14 +69,31 @@ export const LoginForm = () => {
             isError={!!errors.email}
             errorMessage={errors.email?.message}
           />
-          <DefaultTextField
-            name="password"
-            label="비밀번호"
-            type="password"
-            register={register("password")}
-            isError={!!errors.password}
-            errorMessage={errors.password?.message}
-          />
+          <div className="relative">
+            <DefaultTextField
+              name="password"
+              label="비밀번호"
+              type={showPassword ? "text" : "password"}
+              register={register("password")}
+              isError={!!errors.password}
+              errorMessage={errors.password?.message}
+              className="pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="cursor-pointer absolute right-3 top-10 -translate-y-1/2 text-grayscale-400 hover:text-grayscale-500 transition-colors"
+              aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 표시하기"}
+              aria-pressed={showPassword}
+              aria-controls="password"
+            >
+              {showPassword ? (
+                <EyeOff className="h-4 w-4" aria-hidden="true" />
+              ) : (
+                <Eye className="h-4 w-4" aria-hidden="true" />
+              )}
+            </button>
+          </div>
         </div>
         <BaseButton
           type="submit"
