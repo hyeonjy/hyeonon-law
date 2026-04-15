@@ -19,7 +19,7 @@ export const HeroSection = () => {
       <div className="relative h-full container mx-auto flex flex-col items-center justify-center text-white px-4">
         {/* Heading 1 */}
         <h1 className="mb-4 text-3xl md:text-5xl font-bold leading-tight text-center">
-          현온의 법무 법인 홈페이지 샘플 입니다.
+          법무법인 현온, 현명한 판단으로 이끌겠습니다.
         </h1>
 
         {/* Subtext */}
