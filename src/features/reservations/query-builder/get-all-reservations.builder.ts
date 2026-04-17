@@ -1,17 +1,24 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 
+interface GetAllReservationsQueryBuilderParams {
+  from: number;
+  to: number;
+}
+
 /**
  * 관리자용 전체 예약 목록 조회 쿼리 빌더
- * reservations 테이블의 모든 레코드를 반환하는 쿼리를 생성
- * 최신 예약이 가장 위에 오도록 created_at 기준 내림차순 정렬
+ * reservations 테이블을 created_at 최신순으로 조회하고,
+ * 페이지네이션을 위해 count + range를 함께 적용
  */
 export const getAllReservationsQueryBuilder = (
   supabaseClient: SupabaseClient,
+  { from, to }: GetAllReservationsQueryBuilderParams,
 ) => {
   const query = supabaseClient
     .from("reservations")
-    .select("*")
-    .order("created_at", { ascending: false }); // 최신순 정렬
+    .select("*", { count: "exact" })
+    .order("created_at", { ascending: false })
+    .range(from, to);
 
   return query;
 };
