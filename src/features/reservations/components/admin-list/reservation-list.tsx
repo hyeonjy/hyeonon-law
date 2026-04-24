@@ -6,10 +6,5 @@ interface IAdminReservationListProps {
 }
 
 export const AdminReservationList = ({ data }: IAdminReservationListProps) => {
-  // TODO: 페이지네이션 구현
-  return (
-    <>
-      <ReservationTable data={data ?? []} isAdmin={true} />
-    </>
-  );
+  return <ReservationTable data={data ?? []} isAdmin={true} />;
 };
