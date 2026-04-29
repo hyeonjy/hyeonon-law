@@ -43,16 +43,40 @@ export const ReservationDetailHeader = ({
     });
   };
 
+  const handleBackClick = () => {
+    const returnQuery =
+      new URLSearchParams(window.location.search).get("returnQuery") ?? "";
+    const normalizedQuery = new URLSearchParams(returnQuery).toString();
+
+    if (normalizedQuery) {
+      router.push(`${ROUTES.ADMIN.RESERVATIONS}?${normalizedQuery}`);
+      return;
+    }
+
+    router.push(ROUTES.ADMIN.RESERVATIONS);
+  };
+
   return (
     <>
       {/* 상단: 목록으로 돌아가기 링크 */}
-      <Link
-        href={isAdmin ? ROUTES.ADMIN.RESERVATIONS : ROUTES.RESERVATIONS}
-        className="flex items-center gap-2 text-primary-100 hover:text-primary-100/80 mb-8"
-      >
-        <ChevronLeft className="h-4 w-4" />
-        <span className="text-base">예약 목록으로 돌아가기</span>
-      </Link>
+      {isAdmin ? (
+        <button
+          type="button"
+          onClick={handleBackClick}
+          className="flex items-center gap-2 text-primary-100 hover:text-primary-100/80 mb-8 cursor-pointer"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          <span className="text-base">예약 목록으로 돌아가기</span>
+        </button>
+      ) : (
+        <Link
+          href={ROUTES.RESERVATIONS}
+          className="flex items-center gap-2 text-primary-100 hover:text-primary-100/80 mb-8"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          <span className="text-base">예약 목록으로 돌아가기</span>
+        </Link>
+      )}
 
       {/* 에러 메시지 */}
       {state && !state.success && <ErrorMessage>{state.message}</ErrorMessage>}

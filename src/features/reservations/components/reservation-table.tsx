@@ -15,15 +15,17 @@ import { ROUTES } from "@/constants/url";
 interface IReservationTableProps {
   data: Reservation[];
   isAdmin?: boolean;
+  detailHref?: (reservationId: string) => string;
 }
 
 export const ReservationTable = ({
   data,
   isAdmin = false,
+  detailHref,
 }: IReservationTableProps) => {
-  const href = isAdmin
-    ? ROUTES.ADMIN.reservationDetail
-    : ROUTES.reservationDetail;
+  const href =
+    detailHref ??
+    (isAdmin ? ROUTES.ADMIN.reservationDetail : ROUTES.reservationDetail);
 
   const getCaseTypeName = (id: string) => {
     return caseTypes.find((type) => type.id === id)?.name || "미정";

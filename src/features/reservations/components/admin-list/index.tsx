@@ -110,13 +110,15 @@ async function AdminReservationsContent({
     Math.ceil(reservationPageData.totalCount / PAGE_SIZE),
   );
   const currentPage = Math.min(page, totalPages);
+  const currentListHref = createPageHref(currentPage, publicFilters);
+  const currentListQuery = currentListHref.split("?")[1] ?? "";
   const reservations = reservationPageData.data;
   const pages = getPaginationPages(currentPage, totalPages);
   const { prevPage, nextPage } = getPrevNextPage(currentPage, totalPages);
 
   return (
     <>
-      <AdminReservationList data={reservations} />
+      <AdminReservationList data={reservations} returnQuery={currentListQuery} />
 
       {/* 페이지네이션 버튼 */}
       {totalPages > 1 && (
