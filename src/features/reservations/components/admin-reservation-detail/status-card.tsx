@@ -44,7 +44,7 @@ export const StatusCard = ({
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="상태 선택" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="reservation-select-content">
                 <SelectItem value="접수">접수</SelectItem>
                 <SelectItem value="확인중">확인중</SelectItem>
                 <SelectItem value="완료">완료</SelectItem>
