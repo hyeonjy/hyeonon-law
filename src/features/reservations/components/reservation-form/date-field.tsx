@@ -27,10 +27,10 @@ export function DateField({ label, value, onChange, error }: IDateFieldProps) {
     return day === 0 || day === 6; // 일요일(0) 또는 토요일(6)
   };
 
-  const isPastDate = (date: Date) => {
+  const isBlockedDate = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    return date < today;
+    return date <= today;
   };
 
   const handleDateSelect = (date: Date | undefined) => {
@@ -62,7 +62,7 @@ export function DateField({ label, value, onChange, error }: IDateFieldProps) {
             mode="single"
             selected={value}
             onSelect={handleDateSelect}
-            disabled={(date) => isPastDate(date) || isWeekend(date)}
+            disabled={(date) => isBlockedDate(date) || isWeekend(date)}
             locale={ko}
           />
         </PopoverContent>
