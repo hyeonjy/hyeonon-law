@@ -1,14 +1,22 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { logout } from "../../services/logout";
 import { ROUTES } from "@/constants/url";
+import { PRIVATE_FILTERS_COOKIE_KEY } from "@/features/reservations/constants/admin-list";
 
 export async function logoutAction(): Promise<void> {
   try {
     const supabase = await createSupabaseServer();
     await logout(supabase);
+
+    const cookieStore = await cookies();
+    cookieStore.set(PRIVATE_FILTERS_COOKIE_KEY, "", {
+      path: ROUTES.ADMIN.RESERVATIONS,
+      maxAge: 0,
+    });
   } catch (error: any) {
     // FIXME: 로그아웃 실패 시에도 로그인 페이지로 이동
     console.error("로그아웃 오류:", error.message);
