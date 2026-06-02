@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   description:
     "현명한 길로 이끄는 법무법인 현온. 각 분야별 전문 변호사들이 깊이 있는 통찰력으로 최적의 법률 솔루션을 제시합니다.",
   icons: {
-    icon: "/icons/logo.png",
+    icon: "/icons/favicon.ico",
   },
 };
 
