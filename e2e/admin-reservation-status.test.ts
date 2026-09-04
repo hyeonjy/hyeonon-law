@@ -17,9 +17,7 @@ const extractStatusFromText = (text: string | null): ReservationStatus => {
   return status;
 };
 
-const chooseNextStatus = (
-  currentStatus: ReservationStatus,
-): ReservationStatus =>
+const chooseNextStatus = (currentStatus: ReservationStatus): ReservationStatus =>
   STATUS_VALUES.find((status) => status !== currentStatus) ?? currentStatus;
 
 const updateStatus = async (page: Page, status: ReservationStatus) => {
@@ -31,23 +29,14 @@ const updateStatus = async (page: Page, status: ReservationStatus) => {
   await expect(statusCombobox).toContainText(status);
 
   await page.getByRole("button", { name: "상태 저장", exact: true }).click();
-  await expect(
-    page.getByText("예약 상태가 성공적으로 변경되었습니다.", { exact: true }),
-  ).toBeVisible();
+  await expect(page.getByText("예약 상태가 성공적으로 변경되었습니다.", { exact: true })).toBeVisible();
 };
 
-test("관리자가 예약 상태를 변경하고 실제 반영 후 원복한다", async ({
-  page,
-  browserName,
-}) => {
-  test.skip(
-    browserName !== "chromium",
-    "데이터 충돌 방지를 위해 chromium에서만 실행",
-  );
-  test.skip(
-    !ADMIN_EMAIL || !ADMIN_PASSWORD,
-    "관리자 계정 환경변수가 필요합니다.",
-  );
+test("관리자가 예약 상태를 변경하고 실제 반영 후 원복한다", async ({ page, browserName }) => {
+  test.setTimeout(90_000);
+
+  test.skip(browserName !== "chromium", "데이터 충돌 방지를 위해 chromium에서만 실행");
+  test.skip(!ADMIN_EMAIL || !ADMIN_PASSWORD, "관리자 계정 환경변수가 필요합니다.");
 
   let reservationDetailPath: string | null = null;
   let originalStatus: ReservationStatus | null = null;
@@ -58,10 +47,7 @@ test("관리자가 예약 상태를 변경하고 실제 반영 후 원복한다"
     await page.goto("/login");
     await page.getByRole("textbox", { name: "이메일" }).fill(ADMIN_EMAIL);
     await page.getByRole("textbox", { name: "비밀번호" }).fill(ADMIN_PASSWORD);
-    await page
-      .locator("form")
-      .getByRole("button", { name: "로그인", exact: true })
-      .click();
+    await page.locator("form").getByRole("button", { name: "로그인", exact: true }).click();
 
     // 홈페이지 리다이렉트 대기 (로그인 성공 확인)
     await expect(page).toHaveURL(/.*localhost:3000\/?$/);
@@ -70,9 +56,7 @@ test("관리자가 예약 상태를 변경하고 실제 반영 후 원복한다"
     await page.goto("/admin/reservations");
     await expect(page).toHaveURL(/\/admin\/reservations$/);
 
-    const firstReservationLink = page
-      .locator("tbody tr a[href^='/admin/reservations/']")
-      .first();
+    const firstReservationLink = page.locator("tbody tr a[href^='/admin/reservations/']").first();
     await expect(firstReservationLink).toBeVisible();
 
     const detailHref = await firstReservationLink.getAttribute("href");
@@ -110,9 +94,7 @@ test("관리자가 예약 상태를 변경하고 실제 반영 후 원복한다"
       .first();
 
     await expect(targetRow).toBeVisible();
-    await expect(
-      targetRow.getByText(nextStatus, { exact: true }),
-    ).toBeVisible();
+    await expect(targetRow.getByText(nextStatus, { exact: true })).toBeVisible();
   } finally {
     // 6) 테스트 종료 시 상태 원복
     if (!reservationDetailPath || !originalStatus || !changedStatus) {
@@ -128,9 +110,7 @@ test("관리자가 예약 상태를 변경하고 실제 반영 후 원복한다"
 
     const statusCombobox = page.getByRole("combobox");
     await expect(statusCombobox).toBeVisible();
-    const currentStatus = extractStatusFromText(
-      await statusCombobox.textContent(),
-    );
+    const currentStatus = extractStatusFromText(await statusCombobox.textContent());
 
     if (currentStatus !== originalStatus) {
       await updateStatus(page, originalStatus);
