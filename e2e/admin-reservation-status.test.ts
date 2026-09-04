@@ -85,7 +85,7 @@ test("관리자가 예약 상태를 변경하고 실제 반영 후 원복한다"
     await expect(page.getByRole("combobox")).toContainText(nextStatus);
 
     // 5) 목록으로 돌아가 동일 예약 row 상태도 변경되었는지 확인
-    await page.getByRole("link", { name: "예약 목록으로 돌아가기" }).click();
+    await page.getByRole("button", { name: "예약 목록으로 돌아가기" }).click();
     await page.waitForURL("**/admin/reservations");
 
     const targetRow = page
