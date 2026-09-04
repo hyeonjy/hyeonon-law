@@ -1,0 +1,71 @@
+name: E2E
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+  push:
+    branches:
+      - dev
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# E2E 테스트가 동일한 Supabase 데이터를 사용하므로 워크플로가 동시에 실행되지 않도록 설정합니다.
+concurrency:
+  group: e2e-shared-supabase
+  cancel-in-progress: false
+
+jobs:
+  playwright:
+    name: Playwright
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      CI: true
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+      USER_ID: ${{ secrets.USER_ID }}
+      USER_PW: ${{ secrets.USER_PW }}
+      ADMIN_ID: ${{ secrets.ADMIN_ID }}
+      ADMIN_PW: ${{ secrets.ADMIN_PW }}
+
+    steps:
+      - name: 소스 코드 내려받기
+        uses: actions/checkout@v7
+
+      - name: pnpm 설치
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - name: Node.js 설치 및 pnpm 캐시 설정
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: 프로젝트 의존성 설치
+        run: pnpm install --frozen-lockfile
+
+      - name: Chromium 설치
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: E2E 테스트 실행
+        run: pnpm exec playwright test --project=chromium
+
+      - name: 실패 리포트 업로드
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: playwright-report/
+          retention-days: 7
