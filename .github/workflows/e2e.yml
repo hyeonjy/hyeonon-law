@@ -38,7 +38,7 @@ jobs:
       ADMIN_PW: ${{ secrets.ADMIN_PW }}
 
     steps:
-      - name: 소스 코드 내려받기
+      - name: Github Repository 불러오기
         uses: actions/checkout@v7
 
       - name: pnpm 설치
